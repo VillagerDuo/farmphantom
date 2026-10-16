@@ -10,6 +10,10 @@
 </p>
 
 <p align="center">
+  <em>Bu benim ilk uygulamam; geri bildirim ve fikirlerini duymayı çok isterim.</em>
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/Windows-desktop-5bcbd5?style=flat-square&logo=windows" alt="Windows desktop" />
   <img src="https://img.shields.io/badge/.NET-10-a987f5?style=flat-square&logo=dotnet" alt=".NET 10" />
   <img src="https://img.shields.io/badge/UI-Avalonia-7b61a8?style=flat-square" alt="Avalonia UI" />
@@ -49,6 +53,16 @@ dotnet run
 > İlk kurulum, Steam çerezleri, Discord ve güvenlik notları için aşağıdaki ayrıntılı kılavuza bak.
 
 ---
+
+## Ekran görüntüleri
+
+<table>
+  <tr>
+    <td align="center"><a href="docs/assets/screenshot-overview.png"><img src="docs/assets/screenshot-overview.png" width="320" alt="FarmPhantom genel bakış ekranı" /></a><br />Genel bakış / Overview</td>
+    <td align="center"><a href="docs/assets/screenshot-games.png"><img src="docs/assets/screenshot-games.png" width="320" alt="FarmPhantom oyun sırası ekranı" /></a><br />Oyunlar ve sıra / Games and queue</td>
+    <td align="center"><a href="docs/assets/screenshot-sales.png"><img src="docs/assets/screenshot-sales.png" width="320" alt="FarmPhantom satış ekranı" /></a><br />Kart satışı / Card sales</td>
+  </tr>
+</table>
 
 ## Türkçe
 
@@ -135,6 +149,8 @@ MIT, `LICENSE`. Kullanılan kütüphaneler `THIRD-PARTY-NOTICES.md`. Idle Master
 ---
 
 ## English
+
+This is my first app. I'm learning as I build it, and feedback or ideas are always welcome.
 
 Desktop app for Steam trading card drops. It can idle several games at once, watch what actually dropped, and prepare Market listings. Nothing goes up for sale until you confirm it.
 

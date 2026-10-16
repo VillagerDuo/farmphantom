@@ -55,6 +55,11 @@
     .kicker { color: var(--low); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; margin: 0 0 10px; }
     h1 { font-size: clamp(32px, 5vw, 52px); line-height: 1.1; margin: 0 0 14px; }
     .lead { color: var(--mid); font-size: 18px; max-width: 38rem; margin: 0 0 22px; }
+    .maker-note {
+      max-width: 38rem; margin: 0 0 22px; padding: 10px 14px;
+      border-left: 3px solid var(--violet); border-radius: 8px;
+      background: var(--surface); color: var(--mid); font-size: 14px;
+    }
     .cta { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 40px; }
     .app {
       border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--surface);
@@ -81,6 +86,17 @@
     .card p { margin: 0; color: var(--mid); font-size: 14px; }
     section { padding: 18px 0 40px; }
     h2 { font-size: 22px; margin: 0 0 12px; }
+    .screenshots { padding-top: 22px; }
+    .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+    .shot {
+      margin: 0; overflow: hidden; border: 1px solid var(--line);
+      border-radius: 14px; background: var(--surface);
+      transition: transform .18s ease, border-color .18s ease;
+    }
+    .shot:hover { transform: translateY(-3px); border-color: var(--violet); }
+    .shot a { display: block; }
+    .shot img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; background: var(--void); }
+    .shot figcaption { padding: 12px 14px; color: var(--mid); font-size: 13px; }
     ol { color: var(--mid); padding-left: 1.2rem; }
     .warn { color: var(--amber); background: #241c12; border: 1px solid #3d3220; border-radius: 12px; padding: 14px 16px; }
     footer { border-top: 1px solid var(--line); color: var(--low); padding: 22px 0 36px; font-size: 13px; display: flex; gap: 16px; flex-wrap: wrap; }
@@ -115,6 +131,8 @@
       <h1 class="en">Idle the games. You approve the listings.</h1>
       <p class="lead tr">Birden fazla oyunu aynı anda idle et, gerçek düşüşleri say, Market ilanını sen basınca yayınla. Windows masaüstü, açık kaynak, MIT.</p>
       <p class="lead en">Idle several games at once, count real drops, list on the Steam Market only when you confirm. Windows desktop, open source, MIT.</p>
+      <p class="maker-note tr">Bu benim ilk uygulamam. Geliştirirken öğreniyorum; geri bildirim ve fikirlerini duymayı çok isterim.</p>
+      <p class="maker-note en">This is my first app. I'm learning as I build it, and feedback or ideas are always welcome.</p>
       <div class="cta">
         <a class="btn primary" id="code-btn" href="#">Kaynak / Source</a>
         <a class="btn" href="https://github.com/" id="readme-btn">README</a>
@@ -174,6 +192,28 @@
         <p class="en">Your bot, drop DMs, a few remote commands. No remote selling.</p>
       </article>
     </div>
+
+    <section class="screenshots">
+      <h2 class="tr">Uygulamadan görüntüler</h2>
+      <h2 class="en">A look inside</h2>
+      <div class="gallery">
+        <figure class="shot">
+          <a href="assets/screenshot-overview.png"><img src="assets/screenshot-overview.png" alt="FarmPhantom genel bakış ve son düşen kartlar ekranı" loading="lazy" /></a>
+          <figcaption class="tr">Genel bakış · oturum özeti ve son düşen kartlar</figcaption>
+          <figcaption class="en">Overview · session summary and recent drops</figcaption>
+        </figure>
+        <figure class="shot">
+          <a href="assets/screenshot-games.png"><img src="assets/screenshot-games.png" alt="FarmPhantom oyun kütüphanesi ve sıra ekranı" loading="lazy" /></a>
+          <figcaption class="tr">Oyunlar · kütüphane ve idle sırası</figcaption>
+          <figcaption class="en">Games · library and idle queue</figcaption>
+        </figure>
+        <figure class="shot">
+          <a href="assets/screenshot-sales.png"><img src="assets/screenshot-sales.png" alt="FarmPhantom kart satış ekranı ve ilan taslakları" loading="lazy" /></a>
+          <figcaption class="tr">Satış · kartlar ve ilan taslakları</figcaption>
+          <figcaption class="en">Sales · cards and listing drafts</figcaption>
+        </figure>
+      </div>
+    </section>
 
     <section>
       <h2 class="tr">Çalıştırmak</h2>
