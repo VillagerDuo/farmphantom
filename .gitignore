@@ -1,0 +1,15 @@
+bin/
+obj/
+.vs/
+.idea/
+*.user
+*.suo
+data/
+server/data/
+dist/
+release/
+*.zip
+# Valve'in yeniden dağıtılabilir dosyaları depoya konmaz
+steam_api64.dll
+libsteam_api.so
+libsteam_api.dylib

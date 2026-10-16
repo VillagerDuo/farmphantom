@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FarmPhantom — Steam card tracker</title>
+  <meta name="description" content="Idle several Steam games at once, track card drops, list on the Market only when you say so." />
+  <link rel="icon" href="favicon.ico" />
+  <style>
+    :root {
+      --void: #0b0e16;
+      --rail: #111722;
+      --surface: #151b27;
+      --raised: #1b2331;
+      --line: #273142;
+      --violet: #a987f5;
+      --cyan: #5bcbd5;
+      --hi: #f0f2f7;
+      --mid: #a6adbb;
+      --low: #747e90;
+      --mint: #57d8b2;
+      --rose: #f27691;
+      --amber: #e8b966;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: var(--void); color: var(--hi); font: 15px/1.55 "Segoe UI", Bahnschrift, system-ui, sans-serif; }
+    a { color: var(--cyan); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .wrap { width: min(1080px, calc(100% - 40px)); margin: 0 auto; }
+    header {
+      position: sticky; top: 0; z-index: 5;
+      background: rgba(11,14,22,.86); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav { display: flex; align-items: center; gap: 14px; padding: 14px 0; }
+    .brand { display: flex; align-items: center; gap: 10px; color: var(--hi); font-weight: 700; letter-spacing: .02em; text-decoration: none; }
+    .brand img { width: 36px; height: 36px; border-radius: 11px; border: 1px solid var(--line); }
+    .nav-spacer { flex: 1; }
+    .lang { display: flex; background: var(--raised); border-radius: 9px; padding: 3px; }
+    .lang button {
+      border: 0; background: transparent; color: var(--mid); padding: 6px 10px; border-radius: 7px; cursor: pointer; font-weight: 650;
+    }
+    .lang button.on { background: #25213c; color: var(--hi); }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 10px 16px; border-radius: 9px; font-weight: 650; border: 0; cursor: pointer;
+      background: var(--raised); color: var(--hi); text-decoration: none;
+    }
+    .btn:hover { text-decoration: none; filter: brightness(1.08); }
+    .btn.primary {
+      background: linear-gradient(135deg, #9c79e8, #55c8d0);
+      color: #fff;
+    }
+    hero, .hero { padding: 56px 0 28px; }
+    .kicker { color: var(--low); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; margin: 0 0 10px; }
+    h1 { font-size: clamp(32px, 5vw, 52px); line-height: 1.1; margin: 0 0 14px; }
+    .lead { color: var(--mid); font-size: 18px; max-width: 38rem; margin: 0 0 22px; }
+    .cta { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 40px; }
+    .app {
+      border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--surface);
+      box-shadow: 0 30px 80px rgba(0,0,0,.35);
+    }
+    .app-bar { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+    .dots { display: flex; gap: 6px; }
+    .dots i { width: 9px; height: 9px; border-radius: 50%; display: block; background: #3a4558; }
+    .app-title { color: var(--low); font-size: 12px; }
+    .app-body { display: grid; grid-template-columns: 180px 1fr; min-height: 280px; }
+    .rail { background: var(--rail); border-right: 1px solid var(--line); padding: 16px 12px; }
+    .rail .item { color: var(--mid); padding: 10px 12px; border-radius: 11px; font-size: 13px; }
+    .rail .item.on { background: #25213c; color: var(--hi); }
+    .stage { padding: 18px; }
+    .strip { display: flex; gap: 18px; background: var(--void); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; }
+    .stat b { display: block; font-size: 22px; }
+    .stat span { color: var(--low); font-size: 11px; }
+    .fake-rows { margin-top: 14px; }
+    .row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; background: var(--void); border: 1px solid var(--line); margin-bottom: 8px; color: var(--mid); font-size: 13px; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--mint); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; padding: 36px 0 10px; }
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+    .card h3 { margin: 0 0 8px; font-size: 16px; }
+    .card p { margin: 0; color: var(--mid); font-size: 14px; }
+    section { padding: 18px 0 40px; }
+    h2 { font-size: 22px; margin: 0 0 12px; }
+    ol { color: var(--mid); padding-left: 1.2rem; }
+    .warn { color: var(--amber); background: #241c12; border: 1px solid #3d3220; border-radius: 12px; padding: 14px 16px; }
+    footer { border-top: 1px solid var(--line); color: var(--low); padding: 22px 0 36px; font-size: 13px; display: flex; gap: 16px; flex-wrap: wrap; }
+    [data-lang="en"] .tr, [data-lang="tr"] .en { display: none; }
+    @media (max-width: 720px) {
+      .app-body { grid-template-columns: 1fr; }
+      .rail { display: none; }
+    }
+  </style>
+</head>
+<body data-lang="tr">
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="./">
+        <img src="assets/logo.png" alt="" />
+        FarmPhantom
+      </a>
+      <div class="nav-spacer"></div>
+      <div class="lang">
+        <button type="button" data-set="tr" class="on">TR</button>
+        <button type="button" data-set="en">EN</button>
+      </div>
+      <a class="btn" id="src-link" href="#">GitHub</a>
+      <a class="btn primary" href="https://discord.gg/Ny9NxMwTHj">Discord</a>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="hero">
+      <p class="kicker">Steam card tracker</p>
+      <h1 class="tr">Kart düşsün, sen onayla.</h1>
+      <h1 class="en">Idle the games. You approve the listings.</h1>
+      <p class="lead tr">Birden fazla oyunu aynı anda idle et, gerçek düşüşleri say, Market ilanını sen basınca yayınla. Windows masaüstü, açık kaynak, MIT.</p>
+      <p class="lead en">Idle several games at once, count real drops, list on the Steam Market only when you confirm. Windows desktop, open source, MIT.</p>
+      <div class="cta">
+        <a class="btn primary" id="code-btn" href="#">Kaynak / Source</a>
+        <a class="btn" href="https://github.com/" id="readme-btn">README</a>
+      </div>
+
+      <div class="app" aria-hidden="true">
+        <div class="app-bar">
+          <div class="dots"><i></i><i></i><i></i></div>
+          <div class="app-title">FarmPhantom</div>
+        </div>
+        <div class="app-body">
+          <div class="rail">
+            <div class="item on">◇  Genel bakış</div>
+            <div class="item">▦  Oyunlar</div>
+            <div class="item">◈  Kart takibi</div>
+            <div class="item">▣  Satış</div>
+          </div>
+          <div class="stage">
+            <div class="strip">
+              <div class="stat"><b>3</b><span class="tr">çalışan</span><span class="en">running</span></div>
+              <div class="stat"><b>12</b><span class="tr">bugün</span><span class="en">today</span></div>
+              <div class="stat"><b>41</b><span class="tr">kalan</span><span class="en">left</span></div>
+            </div>
+            <div class="fake-rows">
+              <div class="row"><span class="dot"></span> idle · queue filling</div>
+              <div class="row"><span class="dot"></span> drop counted only for running games</div>
+              <div class="row"><span class="dot"></span> market draft waits for approve</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <article class="card">
+        <h3 class="tr">Paralel idle</h3>
+        <h3 class="en">Parallel idle</h3>
+        <p class="tr">Aynı anda 1–32 oyun. Sıra senin, ya da kartı az/çok kalana göre.</p>
+        <p class="en">1–32 games at once. Your order, or fewest / most cards left.</p>
+      </article>
+      <article class="card">
+        <h3 class="tr">Dürüst düşüş sayımı</h3>
+        <h3 class="en">Honest drop counts</h3>
+        <p class="tr">Yalnızca o anda idle ettiğin oyunun kartı yazılır. Takas sayılmaz.</p>
+        <p class="en">Only cards from games you are idling right now. Trades don’t count.</p>
+      </article>
+      <article class="card">
+        <h3 class="tr">Satış sende</h3>
+        <h3 class="en">You list it</h3>
+        <p class="tr">Fiyatı çeker, taslak çıkarır. Onaylamadan Market’e bir şey gitmez.</p>
+        <p class="en">Fetches prices, builds drafts. Nothing hits the Market until you confirm.</p>
+      </article>
+      <article class="card">
+        <h3 class="tr">İsteğe bağlı Discord</h3>
+        <h3 class="en">Optional Discord</h3>
+        <p class="tr">Kendi botun, DM bildirim, birkaç uzaktan komut. Satış uzaktan yok.</p>
+        <p class="en">Your bot, drop DMs, a few remote commands. No remote selling.</p>
+      </article>
+    </div>
+
+    <section>
+      <h2 class="tr">Çalıştırmak</h2>
+      <h2 class="en">Run it</h2>
+      <ol>
+        <li class="tr">.NET 10 SDK kur.</li>
+        <li class="en">Install the .NET 10 SDK.</li>
+        <li class="tr">Resmi <code>steam_api64.dll</code> dosyasını <code>app/</code> içine koy (repoda yok).</li>
+        <li class="en">Put the official <code>steam_api64.dll</code> in <code>app/</code> (not in the repo).</li>
+        <li><code>cd app</code> → <code>dotnet run</code></li>
+      </ol>
+      <p class="warn tr">Giriş Steam çerezleriyle. <code>sessionid</code> ve <code>steamLoginSecure</code> hesap anahtarı gibi; paylaşma. Idle Steam kurallarına takılabilir, yüksek paralel sayı riski artırır.</p>
+      <p class="warn en">Login is Steam cookies. <code>sessionid</code> and <code>steamLoginSecure</code> are full account access; don’t share them. Idle can still get an account restricted. High parallel counts make that more likely.</p>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    <span>MIT · Avalonia · .NET 10</span>
+    <span class="tr">Idle Master Extended kodu yok.</span>
+    <span class="en">No Idle Master Extended source.</span>
+  </footer>
+
+  <script>
+    const root = document.body;
+    const saved = localStorage.getItem("fp-lang");
+    if (saved === "en" || saved === "tr") root.setAttribute("data-lang", saved);
+
+    function syncLangButtons() {
+      const lang = root.getAttribute("data-lang");
+      document.querySelectorAll(".lang button").forEach((b) => {
+        b.classList.toggle("on", b.getAttribute("data-set") === lang);
+      });
+    }
+    document.querySelectorAll(".lang button").forEach((b) => {
+      b.addEventListener("click", () => {
+        const lang = b.getAttribute("data-set");
+        root.setAttribute("data-lang", lang);
+        localStorage.setItem("fp-lang", lang);
+        syncLangButtons();
+      });
+    });
+    syncLangButtons();
+
+    const host = location.hostname;
+    let repoUrl = "../";
+    if (host.endsWith("github.io")) {
+      const user = host.split(".")[0];
+      const repo = location.pathname.split("/").filter(Boolean)[0] || "FarmPhantom";
+      repoUrl = "https://github.com/" + user + "/" + repo;
+    }
+    document.getElementById("src-link").href = repoUrl;
+    document.getElementById("code-btn").href = repoUrl;
+    document.getElementById("readme-btn").href = repoUrl.replace(/\/?$/, "") + "#readme";
+  </script>
+</body>
+</html>

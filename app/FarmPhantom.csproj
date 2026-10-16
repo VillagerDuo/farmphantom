@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <AssemblyName>FarmPhantom</AssemblyName>
+    <RootNamespace>FarmPhantom</RootNamespace>
+    <Product>FarmPhantom</Product>
+    <AssemblyTitle>FarmPhantom</AssemblyTitle>
+    <ApplicationIcon>FarmPhantom.ico</ApplicationIcon>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+  </PropertyGroup>
+
+  <!--
+    Tek dosya yayın (self-contained, .NET kurulu olmayan bilgisayarda da çalışır):
+      dotnet publish -c Release -r win-x64
+    Çıktı klasöründe FarmPhantom.exe ve yanında steam_api64.dll bulunur. Steamworks DLL'i
+    exe'nin içine gömülmez; Steam yerel kütüphanesi onu exe'nin yanında arar.
+  -->
+  <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="12.1.4" />
+    <PackageReference Include="Avalonia.Desktop" Version="12.1.4" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.4" />
+    <PackageReference Include="Steamworks.NET" Version="2024.8.0" />
+    <PackageReference Include="Discord.Net" Version="3.18.0" />
+    <PackageReference Include="DiscordRichPresence" Version="1.2.1.24" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="uygulamalogosu.png" />
+    <AvaloniaResource Include="FarmPhantom.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Locales\*.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!--
+    Steamworks yerel çalışma zamanı. steam_api64.dll (Windows x64) dosyasını proje klasörüne koyarsan
+    derleme sırasında FarmPhantom.exe'nin yanına otomatik kopyalanır. Idle bu dosya olmadan çalışmaz.
+  -->
+  <ItemGroup>
+    <None Include="steam_api64.dll" Condition="Exists('steam_api64.dll')" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <None Include="libsteam_api.so" Condition="Exists('libsteam_api.so')" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <None Include="libsteam_api.dylib" Condition="Exists('libsteam_api.dylib')" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

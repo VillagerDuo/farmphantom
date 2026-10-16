@@ -1,0 +1,18 @@
+{
+  "culture": "nl-NL",
+  "displayName": "Nederlands",
+  "strings": {
+    "app.tagline": "...",
+    "nav.overview": "...",
+    "nav.games": "...",
+    "nav.drops": "...",
+    "nav.sales": "...",
+    "nav.settings": "...",
+    "page.overview": "...",
+    "page.games": "...",
+    "page.drops": "...",
+    "page.sales": "...",
+    "page.settings": "...",
+    "settings.language": "..."
+  }
+}

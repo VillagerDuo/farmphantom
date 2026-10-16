@@ -1,0 +1,197 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="FarmPhantom.App"
+             RequestedThemeVariant="Dark">
+  <Application.Resources>
+    <SolidColorBrush x:Key="BgVoidBrush" Color="#0B0E16" />
+    <SolidColorBrush x:Key="BgRailBrush" Color="#111722" />
+    <SolidColorBrush x:Key="SurfaceBrush" Color="#151B27" />
+    <SolidColorBrush x:Key="RaisedBrush" Color="#1B2331" />
+    <SolidColorBrush x:Key="LineBrush" Color="#273142" />
+    <SolidColorBrush x:Key="VioletBrush" Color="#A987F5" />
+    <SolidColorBrush x:Key="BlueBrush" Color="#5BCBD5" />
+    <SolidColorBrush x:Key="TextHiBrush" Color="#F0F2F7" />
+    <SolidColorBrush x:Key="TextMidBrush" Color="#A6ADBB" />
+    <SolidColorBrush x:Key="TextLowBrush" Color="#747E90" />
+    <SolidColorBrush x:Key="MintBrush" Color="#57D8B2" />
+    <SolidColorBrush x:Key="RoseBrush" Color="#F27691" />
+    <SolidColorBrush x:Key="AmberBrush" Color="#E8B966" />
+    <LinearGradientBrush x:Key="AccentGradient" StartPoint="0%,0%" EndPoint="100%,100%">
+      <GradientStop Offset="0" Color="#9C79E8" />
+      <GradientStop Offset="1" Color="#55C8D0" />
+    </LinearGradientBrush>
+    <FontFamily x:Key="DisplayFont">Bahnschrift, Segoe UI, Arial</FontFamily>
+  </Application.Resources>
+
+  <Application.Styles>
+    <FluentTheme />
+
+    <!-- Metin -->
+    <Style Selector="TextBlock.h1">
+      <Setter Property="FontFamily" Value="{DynamicResource DisplayFont}" />
+      <Setter Property="FontSize" Value="26" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="Foreground" Value="{DynamicResource TextHiBrush}" />
+    </Style>
+    <Style Selector="TextBlock.h2">
+      <Setter Property="FontFamily" Value="{DynamicResource DisplayFont}" />
+      <Setter Property="FontSize" Value="17" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Foreground" Value="{DynamicResource TextHiBrush}" />
+    </Style>
+    <Style Selector="TextBlock.stat">
+      <Setter Property="FontFamily" Value="{DynamicResource DisplayFont}" />
+      <Setter Property="FontSize" Value="22" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="Foreground" Value="{DynamicResource TextHiBrush}" />
+    </Style>
+    <Style Selector="TextBlock.body">
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="Foreground" Value="{DynamicResource TextHiBrush}" />
+    </Style>
+    <Style Selector="TextBlock.muted">
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="Foreground" Value="{DynamicResource TextMidBrush}" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+    <Style Selector="TextBlock.hint">
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="Foreground" Value="{DynamicResource TextLowBrush}" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+    <Style Selector="TextBlock.warn">
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="Foreground" Value="{DynamicResource AmberBrush}" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <!-- Kart yüzeyi -->
+    <Style Selector="Border.card">
+      <Setter Property="Background" Value="{DynamicResource SurfaceBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource LineBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="14" />
+      <Setter Property="Padding" Value="18" />
+    </Style>
+    <Style Selector="Border.badge">
+      <Setter Property="CornerRadius" Value="9" />
+      <Setter Property="Padding" Value="8,3" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <!-- Düğmeler -->
+    <Style Selector="Button">
+      <Setter Property="Background" Value="{DynamicResource RaisedBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource TextHiBrush}" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="CornerRadius" Value="9" />
+      <Setter Property="Padding" Value="14,9" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="#293244" />
+      <Setter Property="Foreground" Value="{DynamicResource TextHiBrush}" />
+    </Style>
+    <Style Selector="Button:pressed /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="#354156" />
+    </Style>
+    <Style Selector="Button:disabled">
+      <Setter Property="Opacity" Value="0.4" />
+    </Style>
+
+    <Style Selector="Button.primary">
+      <Setter Property="Background" Value="{DynamicResource AccentGradient}" />
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style Selector="Button.primary:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{DynamicResource AccentGradient}" />
+      <Setter Property="Foreground" Value="White" />
+      <Setter Property="Opacity" Value="0.88" />
+    </Style>
+    <Style Selector="Button.primary:pressed /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{DynamicResource AccentGradient}" />
+      <Setter Property="Opacity" Value="0.75" />
+    </Style>
+
+    <Style Selector="Button.danger">
+      <Setter Property="Background" Value="#38202D" />
+      <Setter Property="Foreground" Value="{DynamicResource RoseBrush}" />
+    </Style>
+    <Style Selector="Button.danger:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="#482838" />
+      <Setter Property="Foreground" Value="{DynamicResource RoseBrush}" />
+    </Style>
+
+    <Style Selector="Button.nav">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Foreground" Value="{DynamicResource TextMidBrush}" />
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+      <Setter Property="HorizontalContentAlignment" Value="Left" />
+      <Setter Property="Padding" Value="16,12" />
+      <Setter Property="CornerRadius" Value="11" />
+      <Setter Property="FontSize" Value="14" />
+    </Style>
+    <Style Selector="Button.nav:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="#1B2432" />
+      <Setter Property="Foreground" Value="{DynamicResource TextHiBrush}" />
+    </Style>
+    <Style Selector="Button.nav.active">
+      <Setter Property="Background" Value="#25213C" />
+      <Setter Property="Foreground" Value="{DynamicResource TextHiBrush}" />
+    </Style>
+    <Style Selector="Button.nav.active /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="#25213C" />
+      <Setter Property="Foreground" Value="{DynamicResource TextHiBrush}" />
+      <Setter Property="BorderBrush" Value="#25213C" />
+      <Setter Property="BorderThickness" Value="0" />
+    </Style>
+
+    <!-- Giriş alanları -->
+    <Style Selector="TextBox">
+      <Setter Property="Background" Value="{DynamicResource BgVoidBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource LineBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource TextHiBrush}" />
+      <Setter Property="CornerRadius" Value="9" />
+      <Setter Property="Padding" Value="12,9" />
+    </Style>
+    <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
+      <Setter Property="Background" Value="{DynamicResource BgVoidBrush}" />
+      <Setter Property="BorderBrush" Value="#3A4090" />
+    </Style>
+    <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+      <Setter Property="Background" Value="{DynamicResource BgVoidBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource VioletBrush}" />
+    </Style>
+
+    <Style Selector="ComboBox">
+      <Setter Property="Background" Value="{DynamicResource BgVoidBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource LineBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource TextHiBrush}" />
+      <Setter Property="CornerRadius" Value="9" />
+      <Setter Property="Padding" Value="12,8" />
+    </Style>
+
+    <!-- Listeler -->
+    <Style Selector="ListBox">
+      <Setter Property="Background" Value="{DynamicResource BgVoidBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource LineBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="11" />
+      <Setter Property="Padding" Value="4" />
+    </Style>
+    <Style Selector="ListBoxItem">
+      <Setter Property="Padding" Value="10,8" />
+      <Setter Property="CornerRadius" Value="8" />
+      <Setter Property="Foreground" Value="{DynamicResource TextHiBrush}" />
+    </Style>
+    <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="#1B2432" />
+    </Style>
+    <Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="#28243D" />
+    </Style>
+    <Style Selector="ListBoxItem:selected:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="#302B49" />
+    </Style>
+  </Application.Styles>
+</Application>

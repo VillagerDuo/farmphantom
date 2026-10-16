@@ -1,0 +1,726 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="using:FarmPhantom"
+        x:Class="FarmPhantom.MainWindow"
+        Title="FarmPhantom"
+        Width="1280"
+        Height="840"
+        MinWidth="980"
+        MinHeight="680"
+        Background="{DynamicResource BgVoidBrush}">
+  <Grid RowDefinitions="68,*" ColumnDefinitions="220,*">
+
+    <!-- Üst uygulama çubuğu -->
+    <Border Grid.Row="0" Grid.ColumnSpan="2" Background="{DynamicResource SurfaceBrush}"
+            BorderBrush="{DynamicResource LineBrush}" BorderThickness="0,0,0,1" Padding="20,10">
+      <Grid ColumnDefinitions="220,*,Auto">
+        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="11" VerticalAlignment="Center">
+          <Border Width="38" Height="38" CornerRadius="12" ClipToBounds="True"
+                  BorderBrush="{DynamicResource LineBrush}" BorderThickness="1">
+            <Image Source="avares://FarmPhantom/uygulamalogosu.png" Stretch="UniformToFill" />
+          </Border>
+          <StackPanel VerticalAlignment="Center" Spacing="1">
+            <TextBlock Text="{local:Loc Key=app.name}" Classes="h2" />
+            <TextBlock Text="{local:Loc Key=app.tagline}" Classes="hint" FontSize="9" />
+          </StackPanel>
+        </StackPanel>
+        <TextBlock x:Name="PageTitleText" Grid.Column="1" Text="{local:Loc Key=page.overview}" Classes="h2"
+                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+          <Border Classes="badge" Background="{DynamicResource RaisedBrush}">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <Ellipse Width="7" Height="7" Fill="{DynamicResource MintBrush}" VerticalAlignment="Center" />
+              <TextBlock x:Name="HeaderSteamStatus" Text="{local:Loc Key=status.steamUnchecked}" Classes="hint"
+                         VerticalAlignment="Center" TextWrapping="NoWrap" />
+            </StackPanel>
+          </Border>
+          <Button x:Name="StopIdleButton" Content="{local:Loc Key=common.stopIdle}" Classes="danger"
+                  Click="StopIdleButton_Click" IsEnabled="False" />
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <!-- Sol gezinme -->
+    <Border Grid.Row="1" Grid.Column="0"
+            Background="{DynamicResource BgRailBrush}"
+            BorderBrush="{DynamicResource LineBrush}"
+            BorderThickness="0,0,1,0"
+            Padding="14,18">
+      <DockPanel LastChildFill="True">
+        <StackPanel DockPanel.Dock="Bottom" Spacing="10">
+          <Button x:Name="NavSettingsButton" Classes="nav" Tag="settings" Click="NavButton_Click"
+                  Content="{local:Loc Key=nav.settings}" HorizontalAlignment="Stretch" />
+          <Button x:Name="JoinDiscordButton" Content="{local:Loc Key=common.discord}" Classes="primary"
+                  HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                  IsVisible="False" Click="JoinDiscordButton_Click" />
+          <Border Classes="card" Padding="12,10" CornerRadius="11">
+            <StackPanel Orientation="Horizontal" Spacing="9">
+              <Ellipse Width="7" Height="7" Fill="{DynamicResource MintBrush}" VerticalAlignment="Center" />
+              <TextBlock x:Name="SidebarSteamStatus" Text="{local:Loc Key=status.steamUnchecked}" Classes="hint" VerticalAlignment="Center" />
+            </StackPanel>
+          </Border>
+        </StackPanel>
+
+        <StackPanel Spacing="5">
+          <TextBlock Text="{local:Loc Key=nav.section}" Classes="hint" Margin="12,8,0,8" FontSize="9" />
+          <Button x:Name="NavOverviewButton" Classes="nav active" Tag="overview" Click="NavButton_Click" Content="{local:Loc Key=nav.overview}" />
+          <Button x:Name="NavGamesButton" Classes="nav" Tag="games" Click="NavButton_Click" Content="{local:Loc Key=nav.games}" />
+          <Button x:Name="NavDropsButton" Classes="nav" Tag="drops" Click="NavButton_Click" Content="{local:Loc Key=nav.drops}" />
+          <Button x:Name="NavSalesButton" Classes="nav" Tag="sales" Click="NavButton_Click" Content="{local:Loc Key=nav.sales}" />
+        </StackPanel>
+      </DockPanel>
+    </Border>
+
+    <!-- Sağ alan -->
+    <Grid Grid.Row="1" Grid.Column="1" RowDefinitions="Auto,*">
+
+      <!-- Canlı şerit: tüm sayfalarda görünür -->
+      <Border Grid.Row="0" Margin="22,16,22,0" Classes="card" Padding="14,11" CornerRadius="14">
+          <Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="24">
+            <Grid Grid.Column="0" ColumnDefinitions="Auto,*" ColumnSpacing="14">
+            <Border x:Name="NowPlayingArt" Width="104" Height="52" CornerRadius="9" ClipToBounds="True"
+                    IsVisible="False" VerticalAlignment="Center" Background="{DynamicResource RaisedBrush}"
+                    BorderBrush="{DynamicResource LineBrush}" BorderThickness="1">
+              <local:RemoteImage x:Name="NowPlayingImage" DecodeWidth="208" Stretch="UniformToFill" />
+            </Border>
+            <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
+              <StackPanel Orientation="Horizontal" Spacing="10">
+                <Ellipse x:Name="LiveDot" Width="9" Height="9" Fill="#5A5F86" VerticalAlignment="Center" />
+                <TextBlock x:Name="NowPlayingText" Text="{local:Loc Key=overview.idleOff}" Classes="h2" />
+              </StackPanel>
+              <TextBlock x:Name="IdleStatus"
+                         Text="{local:Loc Key=overview.intro}"
+                         Classes="hint" />
+              <ItemsControl x:Name="RunningGamesStrip" IsVisible="False" Margin="0,4,0,0">
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal" Spacing="6" />
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate x:DataType="local:RunningGame">
+                    <Border Width="64" Height="30" CornerRadius="6" ClipToBounds="True"
+                            Background="{DynamicResource RaisedBrush}" ToolTip.Tip="{Binding Name}">
+                      <local:RemoteImage Url="{Binding HeaderUrl}" FallbackUrl="{Binding HeaderFallbackUrl}"
+                                         DecodeWidth="128" Stretch="UniformToFill" />
+                    </Border>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+            </Grid>
+
+            <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
+              <TextBlock x:Name="ElapsedText" Text="—" Classes="stat" />
+              <TextBlock Text="{local:Loc Key=overview.duration}" Classes="hint" />
+            </StackPanel>
+            <StackPanel Grid.Column="2" Spacing="2" VerticalAlignment="Center">
+              <TextBlock x:Name="SinceDropText" Text="—" Classes="stat" />
+              <TextBlock Text="{local:Loc Key=overview.sinceDrop}" Classes="hint" />
+            </StackPanel>
+            <StackPanel Grid.Column="3" Spacing="2" VerticalAlignment="Center">
+              <TextBlock x:Name="SessionDropsText" Text="0" Classes="stat" />
+              <TextBlock Text="{local:Loc Key=overview.sessionCards}" Classes="hint" />
+            </StackPanel>
+
+          </Grid>
+      </Border>
+
+      <!-- Sayfalar -->
+      <Grid Grid.Row="1">
+
+        <!-- GENEL BAKIŞ -->
+        <Grid x:Name="OverviewPage" Margin="22,16,22,20" RowDefinitions="Auto,*" RowSpacing="14">
+          <Grid Grid.Row="0" ColumnDefinitions="*,*,*,*" ColumnSpacing="14">
+            <Border Grid.Column="0" Classes="card" Padding="16">
+              <StackPanel Spacing="3">
+                <TextBlock x:Name="OverviewRunningText" Text="0" Classes="stat" FontSize="30" />
+                <TextBlock Text="{local:Loc Key=overview.runningGame}" Classes="body" FontWeight="SemiBold" />
+                <TextBlock x:Name="OverviewRunningHint" Classes="hint" />
+              </StackPanel>
+            </Border>
+            <Border Grid.Column="1" Classes="card" Padding="16">
+              <StackPanel Spacing="3">
+                <TextBlock x:Name="OverviewTodayText" Text="0" Classes="stat" FontSize="30" />
+                <TextBlock Text="{local:Loc Key=overview.todayCards}" Classes="body" FontWeight="SemiBold" />
+                <TextBlock x:Name="OverviewTotalHint" Classes="hint" />
+              </StackPanel>
+            </Border>
+            <Border Grid.Column="2" Classes="card" Padding="16">
+              <StackPanel Spacing="3">
+                <TextBlock x:Name="OverviewSessionText" Text="0" Classes="stat" FontSize="30" />
+                <TextBlock Text="{local:Loc Key=overview.sessionCards}" Classes="body" FontWeight="SemiBold" />
+                <TextBlock Text="{local:Loc Key=overview.totalSinceOpen}" Classes="hint" />
+              </StackPanel>
+            </Border>
+            <Border Grid.Column="3" Classes="card" Padding="16">
+              <StackPanel Spacing="3">
+                <TextBlock x:Name="OverviewRemainingText" Text="—" Classes="stat" FontSize="30" />
+                <TextBlock Text="{local:Loc Key=overview.remainingCards}" Classes="body" FontWeight="SemiBold" />
+                <TextBlock x:Name="OverviewRemainingHint" Classes="hint" />
+              </StackPanel>
+            </Border>
+          </Grid>
+
+          <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="16">
+            <Border Grid.Column="0" Classes="card">
+              <Grid RowDefinitions="Auto,*" RowSpacing="12">
+                <TextBlock Text="{local:Loc Key=overview.runningGames}" Classes="h2" />
+                <Grid Grid.Row="1">
+                  <ScrollViewer>
+                    <ItemsControl x:Name="OverviewRunningList">
+                      <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                          <StackPanel Spacing="10" />
+                        </ItemsPanelTemplate>
+                      </ItemsControl.ItemsPanel>
+                      <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="local:RunningRow">
+                          <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                            <Border Width="150" Height="70" CornerRadius="8" ClipToBounds="True"
+                                    Background="{DynamicResource RaisedBrush}">
+                              <local:RemoteImage Url="{Binding HeaderUrl}" FallbackUrl="{Binding HeaderFallbackUrl}"
+                                                 DecodeWidth="300" Stretch="UniformToFill" />
+                            </Border>
+                            <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
+                              <TextBlock Text="{Binding Name}" Classes="body" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                              <TextBlock Text="{Binding Summary}" Classes="hint" />
+                            </StackPanel>
+                          </Grid>
+                        </DataTemplate>
+                      </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                  </ScrollViewer>
+                  <TextBlock x:Name="OverviewRunningEmpty" Text="{local:Loc Key=overview.noRunningGames}"
+                             Classes="hint" HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False" />
+                </Grid>
+              </Grid>
+            </Border>
+
+            <Border Grid.Column="1" Classes="card">
+              <Grid RowDefinitions="Auto,*" RowSpacing="12">
+                <TextBlock Text="{local:Loc Key=overview.recentDrops}" Classes="h2" />
+                <Grid Grid.Row="1">
+                  <ScrollViewer>
+                    <ItemsControl x:Name="OverviewRecentList">
+                      <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                          <StackPanel Spacing="10" />
+                        </ItemsPanelTemplate>
+                      </ItemsControl.ItemsPanel>
+                      <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="local:DropEntry">
+                          <Grid ColumnDefinitions="Auto,52,*,Auto" ColumnSpacing="12">
+                            <Border Width="44" Height="58" CornerRadius="6" ClipToBounds="True" VerticalAlignment="Center"
+                                    Background="{DynamicResource RaisedBrush}">
+                              <local:RemoteImage Url="{Binding ImageUrl}" DecodeWidth="132" Stretch="Uniform" />
+                            </Border>
+                            <TextBlock Grid.Column="1" Text="{Binding TimeText}" Classes="stat" FontSize="15" VerticalAlignment="Center" />
+                            <StackPanel Grid.Column="2" Spacing="2" VerticalAlignment="Center">
+                              <TextBlock Text="{Binding CardName}" Classes="body" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                              <TextBlock Text="{Binding GameName}" Classes="hint" />
+                            </StackPanel>
+                            <Border Grid.Column="3" Classes="badge" Background="#1D1B4A" IsVisible="{Binding IsFoil}">
+                              <TextBlock Text="Foil" FontSize="11" Foreground="{DynamicResource BlueBrush}" />
+                            </Border>
+                          </Grid>
+                        </DataTemplate>
+                      </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                  </ScrollViewer>
+                  <TextBlock x:Name="OverviewRecentEmpty" Text="{local:Loc Key=overview.noDrops}"
+                             Classes="hint" HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False" />
+                </Grid>
+              </Grid>
+            </Border>
+          </Grid>
+        </Grid>
+
+        <!-- OYUNLAR -->
+        <Grid x:Name="GamesPage" IsVisible="False" Margin="22,16,22,20" RowDefinitions="Auto,*" ColumnDefinitions="*,370"
+              RowSpacing="16" ColumnSpacing="18">
+          <Border Grid.Row="0" Grid.ColumnSpan="2" Classes="card" Padding="16">
+          <StackPanel Spacing="10">
+            <TextBlock Classes="warn" TextWrapping="Wrap"
+                       Text="{local:Loc Key=games.sessionWarning}" />
+            <Grid ColumnDefinitions="*,*,Auto,Auto" ColumnSpacing="10">
+              <TextBox x:Name="MarketSessionIdTextBox" Grid.Column="0" PlaceholderText="sessionid" PasswordChar="●" />
+              <TextBox x:Name="MarketLoginSecureTextBox" Grid.Column="1" PlaceholderText="steamLoginSecure" PasswordChar="●" />
+              <Button x:Name="LoadBadgeGamesButton" Grid.Column="2" Content="{local:Loc Key=games.load}" Classes="primary"
+                      Click="LoadBadgeGamesButton_Click" />
+              <Button x:Name="ClearCookiesButton" Grid.Column="3" Content="{local:Loc Key=games.clearCookies}"
+                      Click="ClearCookiesButton_Click" />
+            </Grid>
+            <TextBlock Classes="hint" TextWrapping="Wrap"
+                       Text="{local:Loc Key=games.cookieHelp}" />
+          </StackPanel>
+        </Border>
+
+          <Border Grid.Row="1" Grid.Column="0" Classes="card">
+            <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="12">
+              <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="8">
+                <StackPanel Spacing="3" VerticalAlignment="Center">
+                  <TextBlock Text="{local:Loc Key=games.library}" Classes="h2" />
+                  <TextBlock x:Name="GamesSummaryText" Text="{local:Loc Key=games.emptySummary}" Classes="hint" />
+                </StackPanel>
+                <Button x:Name="ToggleBlacklistButton" Grid.Column="1" Content="{local:Loc Key=games.blacklistAdd}"
+                        Click="ToggleBlacklistButton_Click" IsEnabled="False" />
+                <Button x:Name="StartSelectedIdleButton" Grid.Column="2" Content="{local:Loc Key=games.startSelected}"
+                        Click="StartSelectedIdleButton_Click" IsEnabled="False" />
+                <Button Grid.Column="3" Content="{local:Loc Key=games.addToQueue}" Classes="primary"
+                        Click="AddSelectedGamesToQueueButton_Click" />
+              </Grid>
+              <Grid Grid.Row="1" ColumnDefinitions="*,165,190" ColumnSpacing="9">
+                <TextBox x:Name="GameSearchTextBox" PlaceholderText="{local:Loc Key=games.search}"
+                         TextChanged="GameSearchTextBox_TextChanged" />
+                <ComboBox x:Name="GameSortComboBox" Grid.Column="1" SelectedIndex="0"
+                          HorizontalAlignment="Stretch" SelectionChanged="GameSortComboBox_SelectionChanged">
+                  <ComboBoxItem Content="{local:Loc Key=games.sort.nameAsc}" />
+                  <ComboBoxItem Content="{local:Loc Key=games.sort.nameDesc}" />
+                  <ComboBoxItem Content="{local:Loc Key=games.sort.appId}" />
+                  <ComboBoxItem Content="{local:Loc Key=games.sort.installed}" />
+                  <ComboBoxItem Content="{local:Loc Key=games.sort.remaining}" />
+                </ComboBox>
+                <ComboBox x:Name="GameFilterComboBox" Grid.Column="2" SelectedIndex="0"
+                          HorizontalAlignment="Stretch" SelectionChanged="GameFilterComboBox_SelectionChanged">
+                  <ComboBoxItem Content="{local:Loc Key=games.filter.all}" />
+                  <ComboBoxItem Content="{local:Loc Key=games.filter.notBlacklisted}" />
+                  <ComboBoxItem Content="{local:Loc Key=games.filter.blacklisted}" />
+                  <ComboBoxItem Content="{local:Loc Key=games.filter.installed}" />
+                  <ComboBoxItem Content="{local:Loc Key=games.filter.notInstalled}" />
+                  <ComboBoxItem Content="{local:Loc Key=games.filter.remaining}" />
+                </ComboBox>
+              </Grid>
+              <ListBox x:Name="SteamGamesListBox" Grid.Row="2" SelectionMode="Multiple"
+                       SelectionChanged="SteamGamesListBox_SelectionChanged">
+                <ListBox.ItemTemplate>
+                  <DataTemplate x:DataType="local:SteamGame">
+                    <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12">
+                      <Border Width="120" Height="56" CornerRadius="8" ClipToBounds="True" VerticalAlignment="Center"
+                              Background="{DynamicResource RaisedBrush}">
+                        <local:RemoteImage Url="{Binding HeaderUrl}" FallbackUrl="{Binding HeaderFallbackUrl}"
+                                           DecodeWidth="240" Stretch="UniformToFill" />
+                      </Border>
+                      <StackPanel Grid.Column="1" Spacing="3" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Name}" Classes="body" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                          <TextBlock Text="{Binding AppId, StringFormat='App ID {0}'}" Classes="hint" />
+                          <TextBlock Text="{Binding RemainingText}" Classes="hint" Foreground="{DynamicResource MintBrush}" />
+                        </StackPanel>
+                      </StackPanel>
+                      <Border Grid.Column="2" Classes="badge" Background="#10332A" IsVisible="{Binding IsInstalled}">
+                        <TextBlock Text="{local:Loc Key=games.installed}" FontSize="11" Foreground="{DynamicResource MintBrush}" />
+                      </Border>
+                      <Border Grid.Column="3" Classes="badge" Background="#3A1830" IsVisible="{Binding IsBlacklisted}">
+                        <TextBlock Text="{local:Loc Key=games.blacklisted}" FontSize="11" Foreground="{DynamicResource RoseBrush}" />
+                      </Border>
+                    </Grid>
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+              <TextBlock x:Name="GamesEmptyStateText" Grid.Row="3"
+                         Text="{local:Loc Key=games.emptyState}" Classes="hint" IsVisible="True" />
+            </Grid>
+          </Border>
+
+          <Border Grid.Row="1" Grid.Column="1" Classes="card">
+            <Grid RowDefinitions="Auto,*,Auto,Auto" RowSpacing="12">
+              <StackPanel Grid.Row="0" Spacing="3">
+                <TextBlock Text="{local:Loc Key=queue.title}" Classes="h2" />
+                <TextBlock x:Name="QueueSummaryText" Text="{local:Loc Key=queue.summary}" Classes="hint" />
+                <CheckBox x:Name="AutoQueueCheckBox" IsChecked="False" IsCheckedChanged="SettingCheckChanged"
+                          Content="{local:Loc Key=queue.auto}" />
+                <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                  <TextBlock Text="{local:Loc Key=queue.nextGame}" Classes="hint" VerticalAlignment="Center" />
+                  <ComboBox x:Name="QueuePriorityComboBox" Width="190" SelectedIndex="0"
+                            SelectionChanged="QueuePriorityComboBox_SelectionChanged">
+                    <ComboBoxItem Content="{local:Loc Key=queue.manual}" />
+                    <ComboBoxItem Content="{local:Loc Key=queue.fewest}" />
+                    <ComboBoxItem Content="{local:Loc Key=queue.most}" />
+                  </ComboBox>
+                </StackPanel>
+              </StackPanel>
+              <ListBox x:Name="QueueListBox" Grid.Row="1" SelectionMode="Multiple">
+                <ListBox.ItemTemplate>
+                  <DataTemplate x:DataType="local:SteamGame">
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                      <Border Width="84" Height="40" CornerRadius="6" ClipToBounds="True" VerticalAlignment="Center"
+                              Background="{DynamicResource RaisedBrush}">
+                        <local:RemoteImage Url="{Binding HeaderUrl}" FallbackUrl="{Binding HeaderFallbackUrl}"
+                                           DecodeWidth="168" Stretch="UniformToFill" />
+                      </Border>
+                      <TextBlock Grid.Column="1" Text="{Binding Name}" Classes="body" VerticalAlignment="Center"
+                                 TextTrimming="CharacterEllipsis" />
+                      <TextBlock Grid.Column="2" Text="{local:Loc Key=games.blacklisted}" FontSize="11"
+                                 Foreground="{DynamicResource RoseBrush}" VerticalAlignment="Center"
+                                 IsVisible="{Binding IsBlacklisted}" />
+                    </Grid>
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+              <WrapPanel Grid.Row="2" Orientation="Horizontal">
+                <Button x:Name="QueueRemainingButton" Content="{local:Loc Key=queue.addRemaining}" Classes="primary" Click="QueueRemainingButton_Click" Margin="0,0,6,6" />
+                <Button Content="{local:Loc Key=queue.up}" Click="MoveQueueItemUpButton_Click" Margin="0,0,6,6" />
+                <Button Content="{local:Loc Key=queue.down}" Click="MoveQueueItemDownButton_Click" Margin="0,0,6,6" />
+                <Button Content="{local:Loc Key=queue.removeSelected}" Classes="danger" Click="RemoveQueueItemsButton_Click" Margin="0,0,6,6" />
+                <Button Content="{local:Loc Key=queue.clear}" Classes="danger" Click="ClearQueueButton_Click" Margin="0,0,0,6" />
+              </WrapPanel>
+              <Grid Grid.Row="3" ColumnDefinitions="*,*" ColumnSpacing="8">
+                <Button x:Name="StartQueueButton" Content="{local:Loc Key=queue.start}" Classes="primary"
+                        HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                        Click="StartQueueButton_Click" IsEnabled="False" />
+                <Button x:Name="NextQueueButton" Grid.Column="1" Content="{local:Loc Key=queue.next}"
+                        HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                        Click="NextQueueButton_Click" IsEnabled="False" />
+              </Grid>
+            </Grid>
+          </Border>
+        </Grid>
+
+        <!-- KART TAKİBİ -->
+        <Grid x:Name="DropsPage" IsVisible="False" Margin="22,16,22,20" RowDefinitions="Auto,*" RowSpacing="16">
+          <Border Grid.Row="0" Classes="card">
+            <StackPanel Spacing="14">
+              <StackPanel Spacing="4">
+                <TextBlock Text="{local:Loc Key=page.drops}" Classes="h1" />
+                <TextBlock Classes="muted"
+                           Text="{local:Loc Key=drops.description}" />
+              </StackPanel>
+              <CheckBox x:Name="DropMonitorCheckBox" IsChecked="True" IsCheckedChanged="SettingCheckChanged"
+                        Content="{local:Loc Key=drops.monitor}" />
+              <Grid ColumnDefinitions="*,*" ColumnSpacing="14">
+                <StackPanel Spacing="6">
+                  <TextBlock Text="{local:Loc Key=drops.interval}" Classes="muted" />
+                  <ComboBox x:Name="DropIntervalComboBox" SelectedIndex="1" HorizontalAlignment="Stretch" SelectionChanged="SettingSelectionChanged">
+                    <ComboBoxItem Content="{local:Loc Key=drops.every2}" />
+                    <ComboBoxItem Content="{local:Loc Key=drops.every3}" />
+                    <ComboBoxItem Content="{local:Loc Key=drops.every5}" />
+                  </ComboBox>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Spacing="6">
+                  <TextBlock Text="{local:Loc Key=drops.timeoutTitle}" Classes="muted" />
+                  <ComboBox x:Name="DropTimeoutComboBox" SelectedIndex="2" HorizontalAlignment="Stretch" SelectionChanged="SettingSelectionChanged">
+                    <ComboBoxItem Content="{local:Loc Key=drops.after20}" />
+                    <ComboBoxItem Content="{local:Loc Key=drops.after30}" />
+                    <ComboBoxItem Content="{local:Loc Key=drops.after45}" />
+                    <ComboBoxItem Content="{local:Loc Key=drops.after60}" />
+                    <ComboBoxItem Content="{local:Loc Key=drops.after90}" />
+                  </ComboBox>
+                </StackPanel>
+              </Grid>
+              <TextBlock Classes="hint"
+                         Text="{local:Loc Key=drops.explanation}" />
+              <TextBlock x:Name="DropStatusText" Classes="muted" Text="{local:Loc Key=drops.initialStatus}" />
+              <Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="10">
+                <TextBlock Text="{local:Loc Key=drops.parallel}" VerticalAlignment="Center" Classes="body" />
+                <ComboBox x:Name="MaxParallelComboBox" Grid.Column="1" SelectedIndex="0"
+                          SelectionChanged="MaxParallelComboBox_SelectionChanged">
+                  <ComboBoxItem Content="1" />
+                  <ComboBoxItem Content="2" />
+                  <ComboBoxItem Content="4" />
+                  <ComboBoxItem Content="8" />
+                  <ComboBoxItem Content="16" />
+                  <ComboBoxItem Content="32" />
+                </ComboBox>
+                <TextBlock Grid.Column="2" Classes="hint" TextWrapping="Wrap" VerticalAlignment="Center"
+                           Text="{local:Loc Key=drops.parallelExplanation}" />
+              </Grid>
+              <TextBlock x:Name="RemainingDropsText" Classes="muted" />
+            </StackPanel>
+          </Border>
+
+          <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="16">
+          <Border Grid.Column="0" Classes="card">
+            <Grid RowDefinitions="Auto,*" RowSpacing="12">
+              <TextBlock Text="{local:Loc Key=drops.history}" Classes="h2" />
+              <Grid Grid.Row="1">
+                <ListBox x:Name="DropLogListBox">
+                  <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="local:DropEntry">
+                      <Grid ColumnDefinitions="Auto,52,*,Auto" ColumnSpacing="12">
+                        <Border Width="44" Height="58" CornerRadius="6" ClipToBounds="True" VerticalAlignment="Center"
+                              Background="{DynamicResource RaisedBrush}">
+                        <local:RemoteImage Url="{Binding ImageUrl}" DecodeWidth="132" Stretch="Uniform" />
+                      </Border>
+                        <TextBlock Grid.Column="1" Text="{Binding TimeText}" Classes="stat" FontSize="15" VerticalAlignment="Center" />
+                        <StackPanel Grid.Column="2" Spacing="2" VerticalAlignment="Center">
+                          <TextBlock Text="{Binding CardName}" Classes="body" FontWeight="SemiBold" />
+                          <TextBlock Text="{Binding GameName}" Classes="hint" />
+                        </StackPanel>
+                        <Border Grid.Column="3" Classes="badge" Background="#1D1B4A" IsVisible="{Binding IsFoil}">
+                          <TextBlock Text="Foil" FontSize="11" Foreground="{DynamicResource BlueBrush}" />
+                        </Border>
+                      </Grid>
+                    </DataTemplate>
+                  </ListBox.ItemTemplate>
+                </ListBox>
+                <TextBlock x:Name="DropLogEmptyText" Text="{local:Loc Key=drops.noDrops}"
+                           Classes="hint" HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False" />
+              </Grid>
+            </Grid>
+          </Border>
+          <Border Grid.Column="1" Classes="card">
+            <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" RowSpacing="12">
+              <TextBlock Text="{local:Loc Key=stats.title}" Classes="h2" />
+              <TextBlock x:Name="StatsSummaryText" Grid.Row="1" Classes="muted"
+                         Text="{local:Loc Key=stats.empty}" />
+              <ComboBox x:Name="StatsViewComboBox" Grid.Row="2" SelectedIndex="0" HorizontalAlignment="Stretch"
+                        SelectionChanged="StatsViewComboBox_SelectionChanged">
+                <ComboBoxItem Content="{local:Loc Key=stats.byGame}" />
+                <ComboBoxItem Content="{local:Loc Key=stats.byDay}" />
+              </ComboBox>
+              <ListBox x:Name="StatsListBox" Grid.Row="3">
+                <ListBox.ItemTemplate>
+                  <DataTemplate x:DataType="local:StatRow">
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                      <Border Width="84" Height="40" CornerRadius="6" ClipToBounds="True" VerticalAlignment="Center"
+                              Background="{DynamicResource RaisedBrush}" IsVisible="{Binding HasImage}">
+                        <local:RemoteImage Url="{Binding HeaderUrl}" FallbackUrl="{Binding HeaderFallbackUrl}"
+                                           DecodeWidth="168" Stretch="UniformToFill" />
+                      </Border>
+                      <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Title}" Classes="body" FontWeight="SemiBold"
+                                   TextTrimming="CharacterEllipsis" />
+                        <TextBlock Text="{Binding Detail}" Classes="hint" />
+                      </StackPanel>
+                      <TextBlock Grid.Column="2" Text="{Binding Count}" Classes="stat" FontSize="18"
+                                 VerticalAlignment="Center" />
+                    </Grid>
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+              <StackPanel Grid.Row="4" Spacing="8">
+                <TextBlock x:Name="StatsValueText" Classes="hint"
+                           Text="{local:Loc Key=stats.valueUnavailable}" />
+                <Button x:Name="CalcValueButton" Content="{local:Loc Key=stats.calculateValue}" HorizontalAlignment="Left"
+                        Click="CalcValueButton_Click" />
+              </StackPanel>
+            </Grid>
+          </Border>
+          </Grid>
+        </Grid>
+
+        <!-- SATIŞ -->
+        <ScrollViewer x:Name="SalesPage" IsVisible="False">
+          <StackPanel Margin="22,16,22,20" Spacing="16">
+            <StackPanel Spacing="4">
+              <TextBlock Text="{local:Loc Key=page.sales}" Classes="h1" />
+              <TextBlock Classes="muted"
+                         Text="{local:Loc Key=sales.description}" />
+            </StackPanel>
+
+            <TextBlock Classes="hint" TextWrapping="Wrap" Text="{local:Loc Key=sales.cookieNote}" />
+
+            <Border Classes="card">
+              <StackPanel Spacing="12">
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                  <StackPanel Spacing="3" VerticalAlignment="Center">
+                    <TextBlock Text="{local:Loc Key=sales.tradableCards}" Classes="h2" />
+                    <TextBlock x:Name="InventorySummaryText" Classes="hint"
+                               Text="{local:Loc Key=sales.inventoryNote}" />
+                  </StackPanel>
+                  <Button x:Name="LoadInventoryButton" Grid.Column="1" Content="{local:Loc Key=sales.loadCards}"
+                          Classes="primary" Click="LoadInventoryButton_Click" />
+                </Grid>
+                <ListBox x:Name="TradingCardsListBox" Height="300" SelectionMode="Multiple"
+                         SelectionChanged="TradingCardsListBox_SelectionChanged">
+                  <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="local:SteamInventoryCard">
+                      <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                        <Border Width="44" Height="58" CornerRadius="6" ClipToBounds="True" VerticalAlignment="Center"
+                              Background="{DynamicResource RaisedBrush}">
+                        <local:RemoteImage Url="{Binding ImageUrl}" DecodeWidth="132" Stretch="Uniform" />
+                      </Border>
+                        <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
+                          <TextBlock Text="{Binding Name}" Classes="body" FontWeight="SemiBold" />
+                          <TextBlock Text="{Binding MarketHashName}" Classes="hint" TextTrimming="CharacterEllipsis" />
+                        </StackPanel>
+                        <TextBlock Grid.Column="2" Text="{Binding Amount, StringFormat='×{0}'}"
+                                   Foreground="{DynamicResource BlueBrush}" VerticalAlignment="Center" />
+                      </Grid>
+                    </DataTemplate>
+                  </ListBox.ItemTemplate>
+                </ListBox>
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                  <TextBlock x:Name="InventoryStatusText" Classes="hint" VerticalAlignment="Center"
+                             Text="{local:Loc Key=sales.inventoryEmpty}" />
+                  <Button x:Name="OpenSelectedMarketButton" Grid.Column="1" Content="{local:Loc Key=sales.openMarket}"
+                          Click="OpenSelectedMarketButton_Click" IsEnabled="False" />
+                </Grid>
+              </StackPanel>
+            </Border>
+
+            <Border Classes="card">
+              <StackPanel Spacing="12">
+                <TextBlock Text="{local:Loc Key=sales.drafts}" Classes="h2" />
+                <Grid ColumnDefinitions="150,170,*,Auto" ColumnSpacing="10">
+                  <StackPanel Spacing="5">
+                    <TextBlock Text="{local:Loc Key=sales.wallet}" Classes="hint" />
+                    <ComboBox x:Name="CurrencyComboBox" HorizontalAlignment="Stretch" SelectionChanged="SettingSelectionChanged" />
+                  </StackPanel>
+                  <StackPanel Grid.Column="1" Spacing="5">
+                    <TextBlock Text="{local:Loc Key=sales.minimumNet}" Classes="hint" />
+                    <TextBox x:Name="MinPriceTextBox" PlaceholderText="{local:Loc Key=sales.minimumPlaceholder}" LostFocus="SettingLostFocus" />
+                  </StackPanel>
+                  <Button x:Name="PrepareDraftsButton" Grid.Column="2" Content="{local:Loc Key=sales.fetchPrices}"
+                          VerticalAlignment="Bottom" HorizontalAlignment="Left" Click="PrepareDraftsButton_Click" />
+                  <Button x:Name="CancelSalesButton" Grid.Column="3" Content="{local:Loc Key=common.cancel}" Classes="danger"
+                          VerticalAlignment="Bottom" Click="CancelSalesButton_Click" IsEnabled="False" />
+                </Grid>
+                <Grid ColumnDefinitions="260,*" ColumnSpacing="10">
+                  <StackPanel Spacing="5">
+                    <TextBlock Text="{local:Loc Key=sales.priceSource}" Classes="hint" />
+                    <ComboBox x:Name="PriceModeComboBox" SelectedIndex="0" HorizontalAlignment="Stretch"
+                              SelectionChanged="SettingSelectionChanged">
+                      <ComboBoxItem Content="{local:Loc Key=sales.lowestListing}" />
+                      <ComboBoxItem Content="{local:Loc Key=sales.highestBuyOrder}" />
+                    </ComboBox>
+                  </StackPanel>
+                  <Button x:Name="AutoSellButton" Grid.Column="1" Content="{local:Loc Key=sales.autoPriceList}"
+                          Classes="primary" VerticalAlignment="Bottom" HorizontalAlignment="Left"
+                          Click="AutoSellButton_Click" />
+                </Grid>
+                <TextBlock Classes="hint"
+                           Text="{local:Loc Key=sales.priceExplanation}" />
+                <Grid>
+                  <ListBox x:Name="SaleDraftsListBox" Height="340">
+                    <ListBox.ItemTemplate>
+                      <DataTemplate x:DataType="local:SaleDraft">
+                        <Grid ColumnDefinitions="Auto,*,92,230,Auto" ColumnSpacing="12">
+                          <Border Width="44" Height="58" CornerRadius="6" ClipToBounds="True" VerticalAlignment="Center"
+                                  Background="{DynamicResource RaisedBrush}">
+                            <local:RemoteImage Url="{Binding ImageUrl}" DecodeWidth="132" Stretch="Uniform" />
+                          </Border>
+                          <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Name}" Classes="body" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                            <TextBlock Text="{Binding StatusText}" Classes="hint" />
+                          </StackPanel>
+                          <TextBox Grid.Column="2" Text="{Binding PriceText}" Padding="10,7" />
+                          <TextBlock Grid.Column="3" Text="{Binding NetText}" Classes="muted" VerticalAlignment="Center" />
+                          <CheckBox Grid.Column="4" IsChecked="{Binding IsApproved}" Content="{local:Loc Key=sales.approve}" VerticalAlignment="Center" />
+                        </Grid>
+                      </DataTemplate>
+                    </ListBox.ItemTemplate>
+                  </ListBox>
+                  <TextBlock x:Name="DraftsEmptyText" Text="{local:Loc Key=sales.draftsEmpty}"
+                             Classes="hint" HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False" />
+                </Grid>
+                <Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="8">
+                  <TextBlock x:Name="SalesStatusText" Classes="hint" VerticalAlignment="Center"
+                             Text="{local:Loc Key=sales.noListingWithoutApproval}" />
+                  <Button x:Name="ApproveAllDraftsButton" Grid.Column="1" Content="{local:Loc Key=sales.approveAll}" Click="ApproveAllDraftsButton_Click" />
+                  <Button x:Name="ClearDraftsButton" Grid.Column="2" Content="{local:Loc Key=sales.clearDrafts}" Classes="danger" Click="ClearDraftsButton_Click" />
+                  <Button x:Name="ListApprovedButton" Grid.Column="3" Content="{local:Loc Key=sales.listApproved}" Classes="primary" Click="ListApprovedButton_Click" />
+                </Grid>
+              </StackPanel>
+            </Border>
+          </StackPanel>
+        </ScrollViewer>
+
+        <!-- AYARLAR -->
+        <ScrollViewer x:Name="SettingsPage" IsVisible="False">
+          <StackPanel Margin="22,16,22,20" Spacing="16">
+            <TextBlock Text="{local:Loc Key=page.settings}" Classes="h1" />
+
+            <Border Classes="card">
+              <Grid ColumnDefinitions="*,220" ColumnSpacing="12">
+                <TextBlock Text="{local:Loc Key=settings.language}" Classes="body" FontWeight="SemiBold" VerticalAlignment="Center" />
+                <ComboBox x:Name="LanguageComboBox" Grid.Column="1" SelectionChanged="LanguageComboBox_SelectionChanged">
+                  <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="local:LanguageOption">
+                      <TextBlock Text="{Binding DisplayName}" />
+                    </DataTemplate>
+                  </ComboBox.ItemTemplate>
+                </ComboBox>
+              </Grid>
+            </Border>
+
+            <Border Classes="card">
+              <StackPanel Spacing="12">
+                <TextBlock Text="{local:Loc Key=settings.steamworks}" Classes="h2" />
+                <TextBlock x:Name="NativeDllStatusText" Classes="muted" Text="{local:Loc Key=settings.checking}" />
+                <TextBlock Classes="hint"
+                           Text="{local:Loc Key=settings.steamworksHelp}" />
+              </StackPanel>
+            </Border>
+
+            <Border Classes="card">
+              <StackPanel Spacing="12">
+                <TextBlock Text="{local:Loc Key=settings.discord}" Classes="h2" />
+                <CheckBox x:Name="PresenceCheckBox" IsChecked="True" IsCheckedChanged="PresenceSettingChanged"
+                          Content="{local:Loc Key=settings.richPresence}" />
+                <CheckBox x:Name="PresenceShowGameCheckBox" IsChecked="True" IsCheckedChanged="PresenceSettingChanged"
+                          Content="{local:Loc Key=settings.presenceGame}" />
+                <TextBlock x:Name="PresenceStatusText" Classes="hint" TextWrapping="Wrap"
+                           Text="{local:Loc Key=settings.presenceHelp}" />
+                <TextBlock Text="{local:Loc Key=settings.ownBot}" Classes="body" FontWeight="SemiBold" Margin="0,8,0,0" />
+                <TextBlock x:Name="DiscordBotStatusText" Classes="muted" TextWrapping="Wrap"
+                           Text="{local:Loc Key=settings.botHelp}" />
+                <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+                  <TextBox x:Name="DiscordBotTokenTextBox" PlaceholderText="{local:Loc Key=settings.botToken}" PasswordChar="●" />
+                  <Button x:Name="ConnectDiscordBotButton" Grid.Column="1" Content="{local:Loc Key=settings.connectBot}" Classes="primary"
+                          Click="ConnectDiscordBotButton_Click" />
+                  <Button x:Name="DisconnectDiscordBotButton" Grid.Column="2" Content="{local:Loc Key=settings.disconnectBot}" Classes="danger"
+                          Click="DisconnectDiscordBotButton_Click" />
+                </Grid>
+                <CheckBox x:Name="BotNotifyCheckBox" IsChecked="True" IsCheckedChanged="SettingCheckChanged"
+                          Content="{local:Loc Key=settings.botNotifications}" />
+                <TextBlock Classes="hint" TextWrapping="Wrap"
+                           Text="{local:Loc Key=settings.botSecurity}" />
+                <Button x:Name="JoinDiscordSettingsButton" Content="{local:Loc Key=settings.joinServer}" HorizontalAlignment="Left"
+                        IsVisible="False" Click="JoinDiscordButton_Click" />
+              </StackPanel>
+            </Border>
+
+            <Border Classes="card">
+              <StackPanel Spacing="12">
+                <TextBlock Text="{local:Loc Key=settings.systemNotifications}" Classes="h2" />
+                <CheckBox x:Name="TrayOnCloseCheckBox" IsChecked="True" IsCheckedChanged="SettingCheckChanged"
+                          Content="{local:Loc Key=settings.trayOnClose}" />
+                <CheckBox x:Name="StartWithWindowsCheckBox" IsChecked="False" IsCheckedChanged="StartWithWindowsCheckBox_Changed"
+                          Content="{local:Loc Key=settings.startWithWindows}" />
+                <TextBlock x:Name="StartupStatusText" Classes="hint" TextWrapping="Wrap"
+                           Text="{local:Loc Key=settings.startupHelp}" />
+                <CheckBox x:Name="NotifyDropCheckBox" IsChecked="True" IsCheckedChanged="SettingCheckChanged"
+                          Content="{local:Loc Key=settings.notifyDrop}" />
+                <CheckBox x:Name="SoundDropCheckBox" IsChecked="True" IsCheckedChanged="SettingCheckChanged"
+                          Content="{local:Loc Key=settings.soundDrop}" />
+                <CheckBox x:Name="AutoRecoverCheckBox" IsChecked="True" IsCheckedChanged="SettingCheckChanged"
+                          Content="{local:Loc Key=settings.autoRecover}" />
+                <TextBlock Classes="hint" TextWrapping="Wrap"
+                           Text="{local:Loc Key=settings.recoverHelp}" />
+              </StackPanel>
+            </Border>
+
+            <Border Classes="card">
+              <StackPanel Spacing="12">
+                <TextBlock Text="{local:Loc Key=settings.diagnostics}" Classes="h2" />
+                <TextBlock Classes="muted"
+                           Text="{local:Loc Key=settings.diagnosticsHelp}" />
+                <TextBlock x:Name="LogPathText" Classes="hint" TextWrapping="Wrap" />
+                <WrapPanel Orientation="Horizontal">
+                  <Button x:Name="OpenLogButton" Content="{local:Loc Key=settings.openLog}" Classes="primary" Click="OpenLogButton_Click" Margin="0,0,8,0" />
+                  <Button x:Name="OpenLogFolderButton" Content="{local:Loc Key=settings.openLogFolder}" Click="OpenLogFolderButton_Click" />
+                </WrapPanel>
+              </StackPanel>
+            </Border>
+
+            <Border Classes="card">
+              <StackPanel Spacing="12">
+                <TextBlock Text="{local:Loc Key=settings.quickActions}" Classes="h2" />
+                <Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="8">
+                  <TextBox x:Name="AppIdTextBox" PlaceholderText="{local:Loc Key=settings.appIdPlaceholder}" />
+                  <Button Grid.Column="1" Content="{local:Loc Key=settings.startIdle}" Classes="primary" Click="StartIdleByAppIdButton_Click" />
+                  <Button Grid.Column="2" Content="{local:Loc Key=settings.launchSteam}" Click="LaunchGameButton_Click" />
+                  <Button Grid.Column="3" Content="{local:Loc Key=settings.badgePage}" Click="OpenBadgePageButton_Click" />
+                </Grid>
+                <TextBlock x:Name="SteamActionStatus" Classes="hint"
+                           Text="{local:Loc Key=settings.gameLaunchHelp}" />
+              </StackPanel>
+            </Border>
+          </StackPanel>
+        </ScrollViewer>
+      </Grid>
+    </Grid>
+  </Grid>
+</Window>
