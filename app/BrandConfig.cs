@@ -12,7 +12,7 @@ internal static class BrandConfig
     public const string DiscordInviteUrl = "https://discord.gg/Ny9NxMwTHj";
 
     /// <summary>İsteğe bağlı: proje sayfası (GitHub vb.). Rich Presence'ta ikinci buton olur.</summary>
-    public const string ProjectUrl = "https://github.com/EmparorFQ/FarmPhantom";
+    public const string ProjectUrl = "https://github.com/VillagerDuo/farmphantom";
 
     /// <summary>Rich Presence görseli: Developer Portal → Rich Presence → Art Assets altındaki anahtar.</summary>
     public const string PresenceImageKey = "logo";
