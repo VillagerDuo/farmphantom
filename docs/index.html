@@ -23,17 +23,25 @@
       --amber: #e8b966;
     }
     * { box-sizing: border-box; }
-    html, body { margin: 0; background: var(--void); color: var(--hi); font: 15px/1.55 "Segoe UI", Bahnschrift, system-ui, sans-serif; }
+    html, body {
+      margin: 0; min-height: 100%;
+      background:
+        radial-gradient(ellipse at 10% 4%, rgba(91,203,213,.12), transparent 34rem),
+        radial-gradient(ellipse at 94% 20%, rgba(169,135,245,.13), transparent 38rem),
+        var(--void);
+      color: var(--hi); font: 15px/1.6 "Segoe UI", Bahnschrift, system-ui, sans-serif;
+      scroll-behavior: smooth;
+    }
     a { color: var(--cyan); text-decoration: none; }
     a:hover { text-decoration: underline; }
     .wrap { width: min(1080px, calc(100% - 40px)); margin: 0 auto; }
     header {
       position: sticky; top: 0; z-index: 5;
-      background: rgba(11,14,22,.86); backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--line);
+      background: rgba(11,14,22,.76); backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(91,203,213,.12);
     }
-    .nav { display: flex; align-items: center; gap: 14px; padding: 14px 0; }
-    .brand { display: flex; align-items: center; gap: 10px; color: var(--hi); font-weight: 700; letter-spacing: .02em; text-decoration: none; }
+    .nav { display: flex; align-items: center; gap: 12px; padding: 12px 0; }
+    .brand { display: flex; align-items: center; gap: 10px; color: var(--hi); font-weight: 750; letter-spacing: .02em; text-decoration: none; }
     .brand img { width: 36px; height: 36px; border-radius: 11px; border: 1px solid var(--line); }
     .nav-spacer { flex: 1; }
     .lang { display: flex; background: var(--raised); border-radius: 9px; padding: 3px; }
@@ -43,27 +51,34 @@
     .lang button.on { background: #25213c; color: var(--hi); }
     .btn {
       display: inline-flex; align-items: center; justify-content: center;
-      padding: 10px 16px; border-radius: 9px; font-weight: 650; border: 0; cursor: pointer;
-      background: var(--raised); color: var(--hi); text-decoration: none;
+      padding: 10px 16px; border: 1px solid rgba(255,255,255,.07); border-radius: 10px;
+      font-weight: 700; cursor: pointer; background: rgba(27,35,49,.88);
+      color: var(--hi); text-decoration: none; transition: transform .18s ease, filter .18s ease, border-color .18s ease;
     }
-    .btn:hover { text-decoration: none; filter: brightness(1.08); }
+    .btn:hover { text-decoration: none; filter: brightness(1.08); transform: translateY(-2px); border-color: rgba(91,203,213,.38); }
     .btn.primary {
-      background: linear-gradient(135deg, #9c79e8, #55c8d0);
-      color: #fff;
+      background: linear-gradient(120deg, #8d6de0, #42b9c5);
+      color: #fff; border-color: transparent; box-shadow: 0 8px 28px rgba(91,203,213,.14);
     }
-    hero, .hero { padding: 56px 0 28px; }
-    .kicker { color: var(--low); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; margin: 0 0 10px; }
-    h1 { font-size: clamp(32px, 5vw, 52px); line-height: 1.1; margin: 0 0 14px; }
-    .lead { color: var(--mid); font-size: 18px; max-width: 38rem; margin: 0 0 22px; }
+    hero, .hero { padding: 68px 0 34px; }
+    .kicker {
+      display: inline-flex; align-items: center; gap: 9px; color: #b6e9e8;
+      font-size: 11px; font-weight: 750; letter-spacing: .13em; text-transform: uppercase;
+      margin: 0 0 17px; padding: 6px 11px; border: 1px solid rgba(91,203,213,.22);
+      border-radius: 999px; background: rgba(91,203,213,.07);
+    }
+    .kicker::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 12px var(--mint); }
+    h1 { max-width: 800px; font-size: clamp(38px, 6vw, 66px); line-height: 1.04; letter-spacing: -.045em; margin: 0 0 18px; }
+    .lead { color: var(--mid); font-size: clamp(16px, 2vw, 19px); max-width: 41rem; margin: 0 0 22px; }
     .maker-note {
       max-width: 38rem; margin: 0 0 22px; padding: 10px 14px;
       border-left: 3px solid var(--violet); border-radius: 8px;
       background: var(--surface); color: var(--mid); font-size: 14px;
     }
-    .cta { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 40px; }
+    .cta { display: flex; flex-wrap: wrap; gap: 10px; margin: 27px 0 42px; }
     .app {
-      border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--surface);
-      box-shadow: 0 30px 80px rgba(0,0,0,.35);
+      border: 1px solid rgba(169,135,245,.24); border-radius: 18px; overflow: hidden; background: rgba(21,27,39,.92);
+      box-shadow: 0 30px 90px rgba(0,0,0,.38), 0 0 60px rgba(91,203,213,.05);
     }
     .app-bar { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
     .dots { display: flex; gap: 6px; }
@@ -80,12 +95,40 @@
     .fake-rows { margin-top: 14px; }
     .row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; background: var(--void); border: 1px solid var(--line); margin-bottom: 8px; color: var(--mid); font-size: 13px; }
     .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--mint); }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; padding: 36px 0 10px; }
-    .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; padding: 30px 0 18px; }
+    .card {
+      background: linear-gradient(145deg, rgba(27,35,49,.88), rgba(21,27,39,.86));
+      border: 1px solid rgba(255,255,255,.07); border-radius: 15px; padding: 20px;
+      transition: transform .18s ease, border-color .18s ease;
+    }
+    .card:hover { transform: translateY(-3px); border-color: rgba(169,135,245,.42); }
     .card h3 { margin: 0 0 8px; font-size: 16px; }
     .card p { margin: 0; color: var(--mid); font-size: 14px; }
-    section { padding: 18px 0 40px; }
-    h2 { font-size: 22px; margin: 0 0 12px; }
+    section { padding: 26px 0 42px; }
+    h2 { font-size: clamp(23px, 3vw, 29px); letter-spacing: -.025em; margin: 0 0 8px; }
+    .section-lead { color: var(--mid); max-width: 42rem; margin: 0 0 22px; }
+    .roadmap { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .roadmap-card {
+      position: relative; min-height: 208px; overflow: hidden;
+      background: linear-gradient(155deg, rgba(27,35,49,.94), rgba(17,23,34,.9));
+      border: 1px solid var(--line); border-radius: 15px; padding: 20px;
+    }
+    .roadmap-card::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 3px; background: var(--low); }
+    .roadmap-card.done::before { background: var(--mint); }
+    .roadmap-card.next::before { background: var(--cyan); }
+    .roadmap-card.later::before { background: var(--violet); }
+    .roadmap-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 18px; }
+    .roadmap-top h3 { margin: 0; font-size: 16px; }
+    .roadmap-status { padding: 4px 9px; border-radius: 999px; background: rgba(255,255,255,.06); color: var(--mid); font-size: 11px; font-weight: 750; white-space: nowrap; }
+    .done .roadmap-status { color: #8de2c5; background: rgba(87,216,178,.1); }
+    .next .roadmap-status { color: #91e2e6; background: rgba(91,203,213,.1); }
+    .later .roadmap-status { color: #c8b5ff; background: rgba(169,135,245,.12); }
+    .roadmap-card ul { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; color: var(--mid); font-size: 13px; }
+    .roadmap-card li { display: flex; align-items: flex-start; gap: 9px; }
+    .roadmap-card li::before { content: "✓"; color: var(--mint); font-weight: 800; }
+    .roadmap-card.next li::before { content: "↗"; color: var(--cyan); }
+    .roadmap-card.later li::before { content: "＋"; color: var(--violet); }
+    .roadmap-note { margin: 14px 0 0; color: var(--low); font-size: 12px; }
     .screenshots { padding-top: 22px; }
     .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
     .shot {
@@ -102,8 +145,16 @@
     footer { border-top: 1px solid var(--line); color: var(--low); padding: 22px 0 36px; font-size: 13px; display: flex; gap: 16px; flex-wrap: wrap; }
     [data-lang="en"] .tr, [data-lang="tr"] .en { display: none; }
     @media (max-width: 720px) {
+      .nav { gap: 7px; }
+      .nav > .btn { padding: 8px 10px; font-size: 13px; }
+      .hero { padding-top: 48px; }
+      .roadmap { grid-template-columns: 1fr; }
+      .roadmap-card { min-height: 0; }
       .app-body { grid-template-columns: 1fr; }
       .rail { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
     }
   </style>
 </head>
@@ -134,6 +185,9 @@
       <p class="maker-note tr">Bu benim ilk uygulamam. Geliştirirken öğreniyorum; geri bildirim ve fikirlerini duymayı çok isterim.</p>
       <p class="maker-note en">This is my first app. I'm learning as I build it, and feedback or ideas are always welcome.</p>
       <div class="cta">
+        <a class="btn primary" href="https://github.com/VillagerDuo/farmphantom/releases/latest">
+          <span class="tr">Windows için indir</span><span class="en">Download for Windows</span>
+        </a>
         <a class="btn primary" id="code-btn" href="#">Kaynak / Source</a>
         <a class="btn" href="https://github.com/" id="readme-btn">README</a>
       </div>
@@ -192,6 +246,65 @@
         <p class="en">Your bot, drop DMs, a few remote commands. No remote selling.</p>
       </article>
     </div>
+
+    <section class="roadmap-section">
+      <h2 class="tr">Yol haritası</h2>
+      <h2 class="en">Roadmap</h2>
+      <p class="section-lead tr">FarmPhantom’ın sıradaki adımları. Tarihler kesin değil; öncelikler geri bildirimlere göre değişebilir.</p>
+      <p class="section-lead en">What’s next for FarmPhantom. Dates aren’t promised; priorities may shift with feedback.</p>
+      <div class="roadmap">
+        <article class="roadmap-card done">
+          <div class="roadmap-top">
+            <h3 class="tr">Temel deneyim</h3>
+            <h3 class="en">Core experience</h3>
+            <span class="roadmap-status tr">Yayında · v1.0.1</span>
+            <span class="roadmap-status en">Shipped · v1.0.1</span>
+          </div>
+          <ul>
+            <li class="tr">Paralel oyun idle ve kart takibi</li>
+            <li class="en">Parallel game idling and card tracking</li>
+            <li class="tr">Görev çubuğunda küçültme ve Windows kurulumu</li>
+            <li class="en">Taskbar minimize and Windows installer</li>
+            <li class="tr">Daha dayanıklı envanter taraması</li>
+            <li class="en">More resilient inventory scanning</li>
+          </ul>
+        </article>
+        <article class="roadmap-card next">
+          <div class="roadmap-top">
+            <h3 class="tr">Sıradaki</h3>
+            <h3 class="en">Up next</h3>
+            <span class="roadmap-status tr">Planlanıyor</span>
+            <span class="roadmap-status en">Planned</span>
+          </div>
+          <ul>
+            <li class="tr">Idle ve kart takibi için daha anlaşılır durum ekranı</li>
+            <li class="en">Clearer status for idling and card tracking</li>
+            <li class="tr">Kuyruk ve oyun seçimi ayarlarını iyileştirme</li>
+            <li class="en">Refine queue and game selection controls</li>
+            <li class="tr">Kurulum ve ilk açılış deneyimini sadeleştirme</li>
+            <li class="en">Simplify setup and first-run experience</li>
+          </ul>
+        </article>
+        <article class="roadmap-card later">
+          <div class="roadmap-top">
+            <h3 class="tr">Keşif aşamasında</h3>
+            <h3 class="en">Exploring</h3>
+            <span class="roadmap-status tr">Fikirler</span>
+            <span class="roadmap-status en">Ideas</span>
+          </div>
+          <ul>
+            <li class="tr">Geçmiş düşüşler ve oturum istatistikleri</li>
+            <li class="en">Drop history and session insights</li>
+            <li class="tr">Daha fazla kişiselleştirme ve erişilebilirlik</li>
+            <li class="en">More personalization and accessibility</li>
+            <li class="tr">Kullanıcı geri bildirimine göre yeni fikirler</li>
+            <li class="en">New ideas based on user feedback</li>
+          </ul>
+        </article>
+      </div>
+      <p class="roadmap-note tr">Bu liste bir plan taslağıdır, kesin teslim tarihi veya özellik sözü değildir.</p>
+      <p class="roadmap-note en">This is a working plan, not a promise of specific features or delivery dates.</p>
+    </section>
 
     <section class="screenshots">
       <h2 class="tr">Uygulamadan görüntüler</h2>
