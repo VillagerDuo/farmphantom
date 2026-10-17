@@ -106,6 +106,52 @@
     .card p { margin: 0; color: var(--mid); font-size: 14px; }
     section { padding: 18px 0 40px; }
     h2 { font-size: 22px; margin: 0 0 12px; }
+    .roadmap-section {
+      display: grid; grid-template-columns: minmax(220px, .8fr) minmax(0, 1.5fr);
+      gap: clamp(28px, 6vw, 76px); align-items: start;
+      margin: 22px 0 30px; padding: clamp(24px, 4vw, 42px);
+      border: 1px solid rgba(169,135,245,.18); border-radius: 22px;
+      background:
+        radial-gradient(ellipse at 0 0, rgba(91,203,213,.07), transparent 38%),
+        linear-gradient(140deg, rgba(21,27,39,.96), rgba(13,17,26,.98));
+      box-shadow: 0 24px 70px rgba(0,0,0,.18);
+    }
+    .roadmap-intro { position: sticky; top: 96px; }
+    .roadmap-eyebrow {
+      margin: 0 0 12px; color: var(--cyan); font-size: 11px;
+      font-weight: 750; letter-spacing: .14em; text-transform: uppercase;
+    }
+    .roadmap-intro h2 { margin: 0 0 12px; font-size: clamp(28px, 4vw, 38px); line-height: 1.12; letter-spacing: -.035em; }
+    .roadmap-intro > p:not(.roadmap-eyebrow) { max-width: 30rem; margin: 0; color: var(--mid); font-size: 14px; }
+    .roadmap-disclaimer { margin-top: 22px; color: var(--low); font-size: 12px; }
+    .roadmap-list { position: relative; display: grid; gap: 0; }
+    .roadmap-list::before {
+      content: ""; position: absolute; top: 23px; bottom: 24px; left: 17px; width: 1px;
+      background: linear-gradient(180deg, rgba(87,216,178,.72), rgba(91,203,213,.5) 52%, rgba(169,135,245,.28));
+    }
+    .roadmap-item { position: relative; display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 16px; padding: 0 0 27px; }
+    .roadmap-item:last-child { padding-bottom: 0; }
+    .roadmap-marker {
+      z-index: 1; display: grid; place-items: center; width: 35px; height: 35px;
+      border: 1px solid var(--line); border-radius: 50%; background: var(--rail);
+      color: var(--low); font-size: 10px; font-weight: 800;
+    }
+    .roadmap-item.shipped .roadmap-marker { border-color: rgba(87,216,178,.42); color: var(--mint); }
+    .roadmap-item.up-next .roadmap-marker { border-color: rgba(91,203,213,.42); color: var(--cyan); box-shadow: 0 0 18px rgba(91,203,213,.09); }
+    .roadmap-item.exploring .roadmap-marker { border-color: rgba(169,135,245,.3); color: #c8b5ff; }
+    .roadmap-content { padding: 3px 0 19px; border-bottom: 1px solid rgba(255,255,255,.07); }
+    .roadmap-item:last-child .roadmap-content { padding-bottom: 0; border-bottom: 0; }
+    .roadmap-item-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 7px; }
+    .roadmap-item-head h3 { margin: 0; font-size: 16px; line-height: 1.35; }
+    .roadmap-status { flex: 0 0 auto; color: var(--low); font-size: 10px; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
+    .shipped .roadmap-status { color: var(--mint); }
+    .up-next .roadmap-status { color: var(--cyan); }
+    .roadmap-summary { margin: 0 0 12px; color: var(--mid); font-size: 13px; }
+    .roadmap-tags { display: flex; flex-wrap: wrap; gap: 7px; }
+    .roadmap-tags span { padding: 4px 8px; border: 1px solid rgba(255,255,255,.07); border-radius: 6px; color: var(--low); font-size: 10px; line-height: 1.35; }
+    .roadmap-goals { display: grid; gap: 9px; margin: 14px 0 0; padding: 0; list-style: none; }
+    .roadmap-goals li { display: grid; grid-template-columns: minmax(88px, .38fr) 1fr; gap: 10px; color: var(--mid); font-size: 12px; line-height: 1.5; }
+    .roadmap-goals strong { color: var(--hi); font-size: 12px; }
     .screenshots { padding-top: 22px; }
     .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
     .shot {
@@ -124,6 +170,20 @@
     @media (max-width: 720px) {
       .app-body { grid-template-columns: 1fr; }
       .rail { display: none; }
+      .roadmap-section { grid-template-columns: 1fr; gap: 28px; padding: 24px 19px; border-radius: 17px; }
+      .roadmap-intro { position: static; }
+      .roadmap-intro h2 { font-size: 29px; }
+      .roadmap-disclaimer { margin-top: 14px; }
+      .roadmap-item { grid-template-columns: 32px minmax(0, 1fr); gap: 12px; padding-bottom: 22px; }
+      .roadmap-marker { width: 32px; height: 32px; }
+      .roadmap-list::before { left: 15px; }
+      .roadmap-item-head { align-items: flex-start; }
+      .roadmap-goals li { grid-template-columns: 1fr; gap: 1px; }
+    }
+    @media (max-width: 520px) {
+      .nav { gap: 8px; }
+      .nav #src-link { display: none; }
+      .nav > .btn { padding: 8px 11px; }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
@@ -218,6 +278,77 @@
         <p class="en">Your bot, drop DMs, a few remote commands. No remote selling.</p>
       </article>
     </div>
+
+    <section class="roadmap-section" id="roadmap">
+      <div class="roadmap-intro">
+        <p class="roadmap-eyebrow tr">FarmPhantom · gelecek planı</p>
+        <p class="roadmap-eyebrow en">FarmPhantom · what’s next</p>
+        <h2 class="tr">Yol haritası</h2>
+        <h2 class="en">Roadmap</h2>
+        <p class="tr">Önce farming motorunu daha güvenilir, anlaşılır ve verimli hale getirmek. Sonraki adımları da kullanıcı geri bildirimleriyle şekillendirmek.</p>
+        <p class="en">First, make the farming engine more reliable, understandable, and efficient. Then shape what comes next with user feedback.</p>
+        <p class="roadmap-disclaimer tr">Bu bir öncelik sırasıdır; kesin teslim tarihi veya değişmez özellik sözü değildir.</p>
+        <p class="roadmap-disclaimer en">These are priorities, not fixed delivery dates or guaranteed features.</p>
+      </div>
+      <div class="roadmap-list">
+        <article class="roadmap-item shipped">
+          <span class="roadmap-marker" aria-hidden="true">01</span>
+          <div class="roadmap-content">
+            <div class="roadmap-item-head">
+              <h3 class="tr">Temel deneyim</h3>
+              <h3 class="en">The essentials</h3>
+              <span class="roadmap-status tr">Yayında</span>
+              <span class="roadmap-status en">Released</span>
+            </div>
+            <p class="roadmap-summary tr">v1.0.1 ile gelen temel deneyim ve ilk sağlamlık iyileştirmeleri.</p>
+            <p class="roadmap-summary en">The core experience and first reliability improvements shipped in v1.0.1.</p>
+            <div class="roadmap-tags">
+              <span class="tr">Paralel idle ve kuyruk</span><span class="en">Parallel idle and queue</span>
+              <span class="tr">Kart / rozet takibi</span><span class="en">Card and badge tracking</span>
+              <span class="tr">Windows kurulumu</span><span class="en">Windows installer</span>
+            </div>
+          </div>
+        </article>
+        <article class="roadmap-item up-next">
+          <span class="roadmap-marker" aria-hidden="true">02</span>
+          <div class="roadmap-content">
+            <div class="roadmap-item-head">
+              <h3 class="tr">Farming motoru · önceliklerimiz</h3>
+              <h3 class="en">Farming engine · our priorities</h3>
+              <span class="roadmap-status tr">Odak noktası</span>
+              <span class="roadmap-status en">Focus</span>
+            </div>
+            <p class="roadmap-summary tr">Motoru baştan yazmak değil; mevcut idle, kuyruk ve takip akışını adım adım iyileştirmek.</p>
+            <p class="roadmap-summary en">Not a rewrite: steadily improve the existing idling, queue, and tracking flows.</p>
+            <ul class="roadmap-goals">
+              <li><strong class="tr">Güvenilirlik</strong><strong class="en">Reliability</strong><span class="tr">Geçici hatalarda daha iyi toparlanma ve anlaşılır hata durumu.</span><span class="en">Better recovery from transient errors and clearer failure status.</span></li>
+              <li><strong class="tr">Kuyruk</strong><strong class="en">Queue</strong><span class="tr">Paralel oyun sınırını ve seçilen oyun sırasını daha öngörülebilir yönetme.</span><span class="en">More predictable handling of parallel limits and chosen game order.</span></li>
+              <li><strong class="tr">Düşüş takibi</strong><strong class="en">Drop tracking</strong><span class="tr">Envanter değişimiyle rozet ilerlemesini daha tutarlı eşleştirme.</span><span class="en">Reconcile inventory changes with badge progress more consistently.</span></li>
+              <li><strong class="tr">Performans</strong><strong class="en">Performance</strong><span class="tr">Gereksiz bekleme ve sorguları azaltırken takibi duyarlı tutma.</span><span class="en">Reduce unnecessary waits and polling while keeping tracking responsive.</span></li>
+              <li><strong class="tr">İlk kullanım</strong><strong class="en">First run</strong><span class="tr">Steam, DLL ve oturum gereksinimlerini daha net anlatan başlangıç akışı.</span><span class="en">A clearer setup flow for Steam, the native DLL, and sign-in requirements.</span></li>
+            </ul>
+          </div>
+        </article>
+        <article class="roadmap-item exploring">
+          <span class="roadmap-marker" aria-hidden="true">03</span>
+          <div class="roadmap-content">
+            <div class="roadmap-item-head">
+              <h3 class="tr">Sonraki adımlar</h3>
+              <h3 class="en">Beyond the core work</h3>
+              <span class="roadmap-status tr">Geri bildirime bağlı</span>
+              <span class="roadmap-status en">Feedback-led</span>
+            </div>
+            <p class="roadmap-summary tr">Öncelikli motor iyileştirmelerinden sonra, en çok istenen ihtiyaçlara göre kapsamı belirleme.</p>
+            <p class="roadmap-summary en">After the engine priorities, decide what to build based on the needs users ask for most.</p>
+            <div class="roadmap-tags">
+              <span class="tr">İstatistik ve geçmiş fikirleri</span><span class="en">Stats and history ideas</span>
+              <span class="tr">Kişiselleştirme</span><span class="en">Personalization</span>
+              <span class="tr">Topluluk geri bildirimi</span><span class="en">Community feedback</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
 
     <section class="screenshots">
       <h2 class="tr">Uygulamadan görüntüler</h2>
