@@ -17,18 +17,19 @@ Kısa checklist. Hem ilk yayın hem sonraki sürümler.
 1. `CHANGELOG.md` güncelle.
 2. Yine DLL / zip / release klasörü commit etme.
 3. Push.
-4. GitHub → Releases → Draft a new release. Tag örn. `v1.0.0`.
-5. Exe/zip koyacaksan Valve’ın Steamworks dağıtım şartına bak. `steam_api64.dll` bu git reposuna girmez.
-6. Publish release.
+4. Windows kurulum dosyası için Inno Setup 6 kur ve `.\scripts\Package-Windows.ps1 -IncludeInstaller -AppVersion 1.0.0` çalıştır. `dist/` içine setup ve ZIP çıkar.
+5. GitHub → Releases → Draft a new release. Tag örn. `v1.0.0`; `dist/FarmPhantom-Setup-win-x64.exe` dosyasını release’e ekle.
+6. Exe/zip koyacaksan Valve’ın Steamworks dağıtım şartına bak. `steam_api64.dll` depoya veya setup’a eklenmez; setup ilk açılışta kullanıcıdan bu dosyayı seçmesini ister. Setup .NET’i kendi içinde taşır ama Steam istemcisini kurmaz.
+7. Publish release.
 
 ## Not
 
 `.gitignore` `release/`, `dist/`, `*.zip`, derleme çıktısı ve Steamworks DLL adlarını dışarıda bırakır. Daha önce yanlışlıkla eklenmiş bir dosyayı kendiliğinden silmez; ilk yayından önce listeyi gözden geçir.
 
-Kaynak kodu açmak ile Windows zip’i vermek ayrı işler. Zip için `README.md` içindeki paketleme satırına bak.
+Kaynak kodu açmak ile Windows setup/ZIP vermek ayrı işler. Paketleme komutu `README.md` içinde.
 
 ---
 
 In GitHub Desktop: add this folder, check the file list (no `bin` / `obj` / `release` / zips / `steam_api64.dll`), make sure cookies and bot tokens are not in the tree, then publish public.
 
-For later versions: update `CHANGELOG.md`, push, draft a GitHub Release. Don’t put Valve’s `steam_api64.dll` in git. Shipping a binary zip is separate from publishing source; the README has the pack script.
+For later versions: update `CHANGELOG.md`, build the installer and zip with `.\scripts\Package-Windows.ps1 -IncludeInstaller -AppVersion <version>`, then attach them to a GitHub Release. Don’t put Valve’s `steam_api64.dll` in git or in the installer unless its distribution terms explicitly allow it. The installer is self-contained for .NET but does not install Steam.

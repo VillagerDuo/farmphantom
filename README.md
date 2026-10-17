@@ -98,6 +98,8 @@ Yanına yine `steam_api64.dll` koyman lazım.
 
 Paylaşılacak ZIP için PowerShell’de `.\scripts\Package-Windows.ps1`. Çıktı `dist/` altına gider.
 
+Kurulum dosyası hazırlamak için Inno Setup 6’yı kurup `.\scripts\Package-Windows.ps1 -IncludeInstaller -AppVersion 1.0.0` çalıştır. `dist/` içine ZIP’in yanında `FarmPhantom-Setup-win-x64.exe` gelir. Setup .NET’i kendi içinde taşır; ayrıca .NET kurdurmaz. İlk açılışta resmi `steam_api64.dll` dosyasını seçmen istenir. Dosya setup’a eklenmez; Steam’i de setup kurmaz. Steam’in bilgisayarda kurulu ve açık olması gerekir.
+
 ### Çerezler
 
 steamcommunity.com’a tarayıcıdan gir → F12 → Application / Uygulama → Cookies → `steamcommunity.com` → `sessionid` ve `steamLoginSecure`.
@@ -194,6 +196,8 @@ dotnet publish -c Release -r win-x64
 Keep `steam_api64.dll` next to the exe.
 
 For a shareable zip, run `.\scripts\Package-Windows.ps1` in PowerShell. Output goes to `dist/`.
+
+To build a Windows installer, install Inno Setup 6 and run `.\scripts\Package-Windows.ps1 -IncludeInstaller -AppVersion 1.0.0`. This creates `dist\FarmPhantom-Setup-win-x64.exe` alongside the zip. The installer is self-contained (no separate .NET install); on first launch, users select the official `steam_api64.dll`. The installer does not bundle that licensed file or install Steam. Steam must already be installed and running.
 
 ### Cookies
 

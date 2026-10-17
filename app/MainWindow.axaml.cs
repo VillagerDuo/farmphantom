@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform;
+using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
@@ -35,6 +36,7 @@ public sealed partial class MainWindow : Window
             Dispatcher.UIThread.Post(() => HandleSessionExited(session, exitCode)));
 
         InitializeComponent();
+        Opened += MainWindow_Opened;
         _isUiInitialized = true;
         Icon = new WindowIcon(AssetLoader.Open(new Uri("avares://FarmPhantom/FarmPhantom.ico")));
         QueueListBox.ItemsSource = _idleQueue;
@@ -917,5 +919,57 @@ public sealed partial class MainWindow : Window
         NativeDllStatusText.Text = NativeSteamApiPresent()
             ? LocalizationService.Instance.Format("native.present", NativeSteamApiFileName)
             : LocalizationService.Instance.Format("native.missing", NativeSteamApiFileName, AppContext.BaseDirectory);
+
+    private async void MainWindow_Opened(object? sender, EventArgs e)
+    {
+        Opened -= MainWindow_Opened;
+        if (OperatingSystem.IsWindows() && !NativeSteamApiPresent())
+        {
+            await ChooseSteamworksRuntimeAsync();
+        }
+    }
+
+    private async void ChooseSteamworksRuntime_Click(object? sender, RoutedEventArgs e) =>
+        await ChooseSteamworksRuntimeAsync();
+
+    private async Task ChooseSteamworksRuntimeAsync()
+    {
+        var files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            AllowMultiple = false,
+            Title = LocalizationService.Instance.Translate("native.chooseTitle"),
+            FileTypeFilter =
+            [
+                new FilePickerFileType(NativeSteamApiFileName)
+                {
+                    Patterns = [NativeSteamApiFileName]
+                }
+            ]
+        });
+
+        if (files.Count == 0)
+        {
+            return;
+        }
+
+        var sourcePath = files[0].Path.LocalPath;
+        if (!Path.GetFileName(sourcePath).Equals(NativeSteamApiFileName, StringComparison.OrdinalIgnoreCase))
+        {
+            NativeDllStatusText.Text = LocalizationService.Instance.Format("native.chooseWrongFile", NativeSteamApiFileName);
+            return;
+        }
+
+        var destinationPath = Path.Combine(AppContext.BaseDirectory, NativeSteamApiFileName);
+        try
+        {
+            File.Copy(sourcePath, destinationPath, overwrite: true);
+            RefreshNativeDllStatus();
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException or NotSupportedException)
+        {
+            AppLog.Error("Steamworks çalışma zamanı kopyalanamadı.", ex);
+            NativeDllStatusText.Text = LocalizationService.Instance.Format("native.chooseFailed", ex.Message);
+        }
+    }
 
 }

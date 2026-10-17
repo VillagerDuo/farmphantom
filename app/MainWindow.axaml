@@ -638,7 +638,12 @@
             <Border Classes="card">
               <StackPanel Spacing="12">
                 <TextBlock Text="{local:Loc Key=settings.steamworks}" Classes="h2" />
-                <TextBlock x:Name="NativeDllStatusText" Classes="muted" Text="{local:Loc Key=settings.checking}" />
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                  <TextBlock x:Name="NativeDllStatusText" Classes="muted" Text="{local:Loc Key=settings.checking}"
+                             VerticalAlignment="Center" TextWrapping="Wrap" />
+                  <Button Grid.Column="1" Content="{local:Loc Key=settings.chooseSteamworks}"
+                          Click="ChooseSteamworksRuntime_Click" />
+                </Grid>
                 <TextBlock Classes="hint"
                            Text="{local:Loc Key=settings.steamworksHelp}" />
               </StackPanel>
