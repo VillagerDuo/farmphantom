@@ -183,7 +183,7 @@ Languages: Turkish, English, German, French, Spanish, Italian, Brazilian Portugu
 
 ### Setup
 
-1. Install the .NET 10 SDK.
+1. Install the .NET 10 SDK..
 2. Put the official `steam_api64.dll` in `app/`. Get it from the Steamworks.NET standalone zip or the Steamworks SDK. It is not in this repo. Steam should be running, and the games should be on that account.
 3. `dotnet run` from `app`.
 
