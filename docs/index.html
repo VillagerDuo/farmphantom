@@ -152,6 +152,12 @@
     .roadmap-goals { display: grid; gap: 9px; margin: 14px 0 0; padding: 0; list-style: none; }
     .roadmap-goals li { display: grid; grid-template-columns: minmax(88px, .38fr) 1fr; gap: 10px; color: var(--mid); font-size: 12px; line-height: 1.5; }
     .roadmap-goals strong { color: var(--hi); font-size: 12px; }
+    .dll-guide { margin: 18px 0 22px; padding: 16px 18px; border: 1px solid rgba(91,203,213,.18); border-radius: 13px; background: rgba(21,27,39,.76); }
+    .dll-guide h3 { margin: 0 0 8px; font-size: 15px; }
+    .dll-guide p { margin: 7px 0; color: var(--mid); font-size: 13px; }
+    .dll-guide a { font-weight: 700; }
+    .dll-guide code { overflow-wrap: anywhere; color: #c8b5ff; }
+    .dll-warning { color: var(--amber) !important; }
     .screenshots { padding-top: 22px; }
     .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
     .shot {
@@ -375,13 +381,37 @@
     <section>
       <h2 class="tr">Çalıştırmak</h2>
       <h2 class="en">Run it</h2>
+      <div class="dll-guide">
+        <h3 class="tr">Hazır Windows sürümünü kurma</h3>
+        <h3 class="en">Install a ready-to-run Windows build</h3>
+        <p class="tr"><a href="https://github.com/VillagerDuo/farmphantom/releases/latest" target="_blank" rel="noopener noreferrer">GitHub Releases</a> sayfasından Setup veya portable ZIP’i indir.</p>
+        <p class="en">Download Setup or the portable ZIP from <a href="https://github.com/VillagerDuo/farmphantom/releases/latest" target="_blank" rel="noopener noreferrer">GitHub Releases</a>.</p>
+        <p class="tr"><strong>Setup:</strong> Setup EXE’yi çalıştır ve sihirbazı tamamla. .NET 10 ayrıca gerekmez. İlk açılışta resmi <code>steam_api64.dll</code> dosyasını seç; FarmPhantom dosyayı uygulamanın yanına kopyalar. İstemi kapatırsan Ayarlar → Steamworks bölümünden seçebilirsin.</p>
+        <p class="en"><strong>Setup:</strong> Run the Setup exe and complete the wizard. No separate .NET 10 install is needed. On first launch, select the official <code>steam_api64.dll</code>; FarmPhantom copies it beside the app. If you dismiss the prompt, select it later in Settings → Steamworks.</p>
+        <p class="tr"><strong>Portable:</strong> ZIP’in tamamını yazma iznin olan bir klasöre çıkar ve içindeki <code>FarmPhantom.exe</code> dosyasını çalıştır. DLL’i önceden exe’nin yanına koyabilir veya ilk açılışta seçebilirsin.</p>
+        <p class="en"><strong>Portable:</strong> Extract the entire ZIP to a writable folder and run <code>FarmPhantom.exe</code>. Put the DLL beside the exe beforehand or select it on first launch.</p>
+        <p class="dll-warning tr">İki sürümde de Steam kurulu ve açık olmalı. DLL varsayılan paketlere dahil değildir; resmi kaynaklar aşağıda. Steam çerezlerini paylaşma.</p>
+        <p class="dll-warning en">Both versions require Steam to be installed and running. The DLL is not included by default; official sources are below. Never share your Steam cookies.</p>
+      </div>
+      <h3 class="tr">Kaynak kodundan çalıştırma</h3>
+      <h3 class="en">Run from source</h3>
       <ol>
         <li class="tr">.NET 10 SDK kur.</li>
         <li class="en">Install the .NET 10 SDK.</li>
-        <li class="tr">Resmi <code>steam_api64.dll</code> dosyasını <code>app/</code> içine koy (repoda yok).</li>
-        <li class="en">Put the official <code>steam_api64.dll</code> in <code>app/</code> (not in the repo).</li>
         <li><code>cd app</code> → <code>dotnet run</code></li>
       </ol>
+      <div class="dll-guide">
+        <h3 class="tr"><code>steam_api64.dll</code> dosyasını edinme</h3>
+        <h3 class="en">Get <code>steam_api64.dll</code></h3>
+        <p class="tr">1. Resmi <a href="https://github.com/rlabrecque/Steamworks.NET/releases/download/2024.8.0/Steamworks.NET-Standalone_2024.8.0.zip" target="_blank" rel="noopener noreferrer">Steamworks.NET 2024.8.0 Standalone ZIP’ini indir</a>. Bu sürüm uygulamanın kullandığı Steamworks.NET paketiyle eşleşir.</p>
+        <p class="en">1. Download the official <a href="https://github.com/rlabrecque/Steamworks.NET/releases/download/2024.8.0/Steamworks.NET-Standalone_2024.8.0.zip" target="_blank" rel="noopener noreferrer">Steamworks.NET 2024.8.0 Standalone ZIP</a>. It matches the Steamworks.NET version used by this app.</p>
+        <p class="tr">2. ZIP’ten <code>Windows-x64/steam_api64.dll</code> dosyasını çıkarıp <code>app/</code> klasörüne kopyala. Kendin yayımlıyorsan DLL’i exe’nin yanında tut.</p>
+        <p class="en">2. Extract <code>Windows-x64/steam_api64.dll</code> and copy it into <code>app/</code>. For your own publish, keep the DLL beside the exe.</p>
+        <p class="tr">Alternatif: <a href="https://partner.steamgames.com/downloads/list" target="_blank" rel="noopener noreferrer">Valve Steamworks SDK’yı indir</a> (Steamworks partner hesabı gerekir) ve <code>sdk/redistributable_bin/win64/steam_api64.dll</code> dosyasını kullan.</p>
+        <p class="en">Alternative: get the <a href="https://partner.steamgames.com/downloads/list" target="_blank" rel="noopener noreferrer">Valve Steamworks SDK</a> (requires a Steamworks partner account) and use <code>sdk/redistributable_bin/win64/steam_api64.dll</code>.</p>
+        <p class="dll-warning tr">DLL depoda veya varsayılan kurulumda yoktur. Başka bir oyundan ya da DLL indirme sitesinden alma; yeniden dağıtmadan önce Valve’ın Steamworks şartlarını kontrol et.</p>
+        <p class="dll-warning en">The DLL is not in this repository or the default installer. Don’t copy it from another game or a DLL-download site; check Valve’s Steamworks terms before redistributing it.</p>
+      </div>
       <p class="warn tr">Giriş Steam çerezleriyle. <code>sessionid</code> ve <code>steamLoginSecure</code> hesap anahtarı gibi; paylaşma. Idle Steam kurallarına takılabilir, yüksek paralel sayı riski artırır.</p>
       <p class="warn en">Login is Steam cookies. <code>sessionid</code> and <code>steamLoginSecure</code> are full account access; don’t share them. Idle can still get an account restricted. High parallel counts make that more likely.</p>
     </section>
