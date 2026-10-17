@@ -55,6 +55,7 @@ internal sealed class SteamInventoryClient
         CancellationToken cancellationToken)
     {
         var cardsByAssetId = new Dictionary<string, SteamInventoryCard>(StringComparer.Ordinal);
+        var seenCursors = new HashSet<string>(StringComparer.Ordinal);
         string? lastAssetId = null;
 
         for (var page = 0; page < MaximumPages; page++)
@@ -75,7 +76,10 @@ internal sealed class SteamInventoryClient
             request.Headers.TryAddWithoutValidation(
                 "Cookie",
                 $"sessionid={session.SessionId}; steamLoginSecure={session.SteamLoginSecure}");
-            using var response = await HttpClient.SendAsync(request, cancellationToken);
+            using var response = await HttpClient.SendAsync(
+                request,
+                HttpCompletionOption.ResponseHeadersRead,
+                cancellationToken);
             if (response.StatusCode == HttpStatusCode.TooManyRequests)
             {
                 throw new HttpRequestException("Steam envanter isteklerini sınırladı. Biraz bekle.");
@@ -186,6 +190,11 @@ internal sealed class SteamInventoryClient
             if (string.IsNullOrWhiteSpace(lastAssetId))
             {
                 throw new InvalidDataException("Steam inventory indicated more pages but did not provide a continuation cursor.");
+            }
+
+            if (!seenCursors.Add(lastAssetId))
+            {
+                throw new InvalidDataException("Steam inventory repeated a continuation cursor; the scan was stopped to avoid looping.");
             }
         }
 

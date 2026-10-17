@@ -13,6 +13,11 @@
 - Açılışta kısa splash (logo, halka, bar). Tıkla veya bir tuşa bas, geçer.
 - Discord botu ayrı Docker işi değil; uygulama ile birlikte çalışıyor. Token’ı Ayarlar’dan giriyorsun, bu PC’de şifreli duruyor.
 - Idle sırasında Discord Rich Presence: “FarmPhantom oynuyor” + logo. `discord-assets/logo.png` dosyasını Developer Portal’da `logo` adıyla yüklemen lazım.
+- Pencereyi küçültmek görev çubuğunda bırakır; sistem tepsisi seçeneği yalnızca pencereyi kapatınca devreye girer.
+- Envanter sorguları HTTP yanıtını akış halinde okur, yinelenen sayfa imlecini algılar; geçici I/O hataları kart izlemeyi durdurmaz.
+- Steam callback döngüsü 100 ms yerine 250 ms’de bir uyanır; idle döngüsü uyanma sayısı %60 azalır.
+- Sabit Steam sayfası ve doğrulama regex’leri kaynak üreteciyle derlenir.
+- Resmi Steamworks DLL’i dağıtım izni varsa paketleme seçeneğiyle setup/ZIP’e eklenebilir; varsayılan olarak hariçtir.
 
 **English**
 
@@ -25,6 +30,11 @@
 - Short splash on launch. Click or press a key to skip.
 - Discord bot runs inside the desktop app (no Docker). Token goes in Settings and stays encrypted on this PC.
 - Rich Presence while idling (“Playing FarmPhantom” + logo). Upload `discord-assets/logo.png` in the Developer Portal as `logo`.
+- Minimizing the window now keeps it on the taskbar; the tray option applies only when closing the window.
+- Inventory polling streams HTTP responses and detects repeated page cursors; transient I/O failures no longer terminate drop monitoring.
+- Steam callback polling now wakes every 250 ms instead of 100 ms, reducing idle-loop wakeups by 60%.
+- Static Steam page and validation regexes are source-generated to reduce runtime compilation overhead.
+- The official Steamworks DLL can be included in setup/ZIP when redistribution is authorized; it is excluded by default.
 
 ## v9
 

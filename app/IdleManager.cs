@@ -90,6 +90,7 @@ internal sealed class IdleManager
                 int code;
                 try
                 {
+                    process.WaitForExit();
                     code = process.ExitCode;
                 }
                 catch (InvalidOperationException)
@@ -105,14 +106,16 @@ internal sealed class IdleManager
             session = created;
             return true;
         }
-        catch (Win32Exception)
+        catch (Win32Exception ex)
         {
-            error = "FarmPhantom idle işlemini başlatamadı.";
+            AppLog.Error($"Idle işlemi başlatılamadı: {name} ({appId}).", ex);
+            error = $"FarmPhantom idle işlemini başlatamadı: {ex.Message}";
             return false;
         }
-        catch (InvalidOperationException)
+        catch (InvalidOperationException ex)
         {
-            error = "FarmPhantom idle işlemi açılamadı.";
+            AppLog.Error($"Idle işlemi açılamadı: {name} ({appId}).", ex);
+            error = $"FarmPhantom idle işlemi açılamadı: {ex.Message}";
             return false;
         }
     }
@@ -158,9 +161,9 @@ internal sealed class IdleManager
         {
             // Süreç zaten bitmiş.
         }
-        catch (Win32Exception)
+        catch (Win32Exception ex)
         {
-            // Durdurulamadı; çıkış olayı gelmezse kullanıcı yeniden dener.
+            AppLog.Error($"Idle işlemi durdurulamadı: {session.Name} ({session.AppId}).", ex);
         }
     }
 

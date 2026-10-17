@@ -98,7 +98,7 @@ Yanına yine `steam_api64.dll` koyman lazım.
 
 Paylaşılacak ZIP için PowerShell’de `.\scripts\Package-Windows.ps1`. Çıktı `dist/` altına gider.
 
-Kurulum dosyası hazırlamak için Inno Setup 6’yı kurup `.\scripts\Package-Windows.ps1 -IncludeInstaller -AppVersion 1.0.0` çalıştır. `dist/` içine ZIP’in yanında `FarmPhantom-Setup-win-x64.exe` gelir. Setup .NET’i kendi içinde taşır; ayrıca .NET kurdurmaz. İlk açılışta resmi `steam_api64.dll` dosyasını seçmen istenir. Dosya setup’a eklenmez; Steam’i de setup kurmaz. Steam’in bilgisayarda kurulu ve açık olması gerekir.
+Kurulum dosyası hazırlamak için Inno Setup 6’yı kurup `.\scripts\Package-Windows.ps1 -IncludeInstaller -AppVersion 1.0.0` çalıştır. `dist/` içine ZIP’in yanında `FarmPhantom-Setup-win-x64.exe` gelir. Setup .NET’i kendi içinde taşır; ayrıca .NET kurdurmaz. Steamworks lisansı yüzünden DLL varsayılan olarak pakete eklenmez; ilk açılışta resmi `steam_api64.dll` dosyasını seçmen istenir. DLL’i dağıtma iznin varsa resmi dosyayı `app/` içine koyup `-IncludeLicensedSteamworksRuntime` seçeneğiyle ZIP ve setup’a ekleyebilirsin. Steam’i setup kurmaz; Steam’in bilgisayarda kurulu ve açık olması gerekir.
 
 ### Çerezler
 
@@ -197,7 +197,7 @@ Keep `steam_api64.dll` next to the exe.
 
 For a shareable zip, run `.\scripts\Package-Windows.ps1` in PowerShell. Output goes to `dist/`.
 
-To build a Windows installer, install Inno Setup 6 and run `.\scripts\Package-Windows.ps1 -IncludeInstaller -AppVersion 1.0.0`. This creates `dist\FarmPhantom-Setup-win-x64.exe` alongside the zip. The installer is self-contained (no separate .NET install); on first launch, users select the official `steam_api64.dll`. The installer does not bundle that licensed file or install Steam. Steam must already be installed and running.
+To build a Windows installer, install Inno Setup 6 and run `.\scripts\Package-Windows.ps1 -IncludeInstaller -AppVersion 1.0.0`. This creates `dist\FarmPhantom-Setup-win-x64.exe` alongside the zip. The installer is self-contained (no separate .NET install); by default users select the official `steam_api64.dll` on first launch. If you have redistribution rights, place the official file in `app/` and add `-IncludeLicensedSteamworksRuntime` to include it in both packages. The installer does not install Steam. Steam must already be installed and running.
 
 ### Cookies
 

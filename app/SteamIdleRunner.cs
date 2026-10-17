@@ -5,6 +5,8 @@ namespace FarmPhantom;
 
 internal static class SteamIdleRunner
 {
+    private static readonly TimeSpan CallbackInterval = TimeSpan.FromMilliseconds(250);
+
     public static int Run(string appIdText)
     {
         if (!uint.TryParse(appIdText, NumberStyles.None, CultureInfo.InvariantCulture, out var appId)
@@ -34,7 +36,7 @@ internal static class SteamIdleRunner
                 stopSignal.Set();
             };
 
-            while (!stopSignal.Wait(TimeSpan.FromMilliseconds(100)))
+            while (!stopSignal.Wait(CallbackInterval))
             {
                 SteamAPI.RunCallbacks();
             }

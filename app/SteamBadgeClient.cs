@@ -10,38 +10,31 @@ internal sealed record BadgeGame(uint AppId, string Name, int? Remaining);
 /// Oturum çerezleri gerekir; yalnızca isteğin Cookie başlığına konur, hiçbir yere kaydedilmez veya günlüğe yazılmaz.
 /// Sayfa biçimini anlayamazsa null döner (çağıran taraf süre sınırına geri döner).
 /// </summary>
-internal sealed class SteamBadgeClient
+internal sealed partial class SteamBadgeClient
 {
     private const int MaximumBadgePages = 40;
     private static readonly HttpClient HttpClient = CreateClient();
 
-    private static readonly Regex ProgressPattern = new(
-        @"<span class=""progress_info_bold"">\s*([^<]*?)\s*</span>",
-        RegexOptions.Compiled | RegexOptions.CultureInvariant);
+    [GeneratedRegex(@"<span class=""progress_info_bold"">\s*([^<]*?)\s*</span>", RegexOptions.CultureInvariant)]
+    private static partial Regex ProgressPattern();
 
-    private static readonly Regex RemainingPattern = new(
-        @"(\d+)\s+card\s+drops?\s+remaining",
-        RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+    [GeneratedRegex(@"(\d+)\s+card\s+drops?\s+remaining", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase)]
+    private static partial Regex RemainingPattern();
 
-    private static readonly Regex RowStartPattern = new(
-        @"<[a-zA-Z][a-zA-Z0-9]*\b[^>]*\bclass\s*=\s*[""'][^""']*\bbadge_row\b[^""']*[""'][^>]*>",
-        RegexOptions.Compiled | RegexOptions.CultureInvariant);
+    [GeneratedRegex(@"<[a-zA-Z][a-zA-Z0-9]*\b[^>]*\bclass\s*=\s*[""'][^""']*\bbadge_row\b[^""']*[""'][^>]*>", RegexOptions.CultureInvariant)]
+    private static partial Regex RowStartPattern();
 
-    private static readonly Regex PageTitlePattern = new(
-        @"<title>\s*([^<]*)</title>",
-        RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+    [GeneratedRegex(@"<title>\s*([^<]*)</title>", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase)]
+    private static partial Regex PageTitlePattern();
 
-    private static readonly Regex LoggedInPattern = new(
-        @"g_steamID\s*=\s*""\d{17}""",
-        RegexOptions.Compiled | RegexOptions.CultureInvariant);
+    [GeneratedRegex(@"g_steamID\s*=\s*""\d{17}""", RegexOptions.CultureInvariant)]
+    private static partial Regex LoggedInPattern();
 
-    private static readonly Regex GameCardsLinkPattern = new(
-        @"/gamecards/(\d+)",
-        RegexOptions.Compiled | RegexOptions.CultureInvariant);
+    [GeneratedRegex(@"/gamecards/(\d+)", RegexOptions.CultureInvariant)]
+    private static partial Regex GameCardsLinkPattern();
 
-    private static readonly Regex BadgeTitlePattern = new(
-        @"<div class=""badge_title"">\s*([^<]*?)(?:&nbsp;|\s)*<",
-        RegexOptions.Compiled | RegexOptions.CultureInvariant);
+    [GeneratedRegex(@"<div class=""badge_title"">\s*([^<]*?)(?:&nbsp;|\s)*<", RegexOptions.CultureInvariant)]
+    private static partial Regex BadgeTitlePattern();
 
     private static HttpClient CreateClient()
     {
@@ -126,9 +119,9 @@ internal sealed class SteamBadgeClient
             }
 
             var added = 0;
-            foreach (var chunk in RowStartPattern.Split(html).Skip(1))
+            foreach (var chunk in RowStartPattern().Split(html).Skip(1))
             {
-                var link = GameCardsLinkPattern.Match(chunk);
+                var link = GameCardsLinkPattern().Match(chunk);
                 if (!link.Success
                     || !uint.TryParse(link.Groups[1].Value, out var appId)
                     || appId == 0
@@ -137,7 +130,7 @@ internal sealed class SteamBadgeClient
                     continue;
                 }
 
-                var title = BadgeTitlePattern.Match(chunk);
+                var title = BadgeTitlePattern().Match(chunk);
                 var name = title.Success ? WebUtility.HtmlDecode(title.Groups[1].Value).Trim() : string.Empty;
                 games[appId] = new BadgeGame(
                     appId,
@@ -217,14 +210,14 @@ internal sealed class SteamBadgeClient
     /// <summary>Sayfa beklenen biçimde okunamadığında gösterilen, kişisel veri içermeyen kısa teşhis.</summary>
     private static string Describe(HttpResponseMessage response, string html)
     {
-        var title = PageTitlePattern.Match(html);
+        var title = PageTitlePattern().Match(html);
         var pageTitle = title.Success ? WebUtility.HtmlDecode(title.Groups[1].Value).Trim() : "yok";
         if (pageTitle.Length > 60)
         {
             pageTitle = pageTitle[..60];
         }
 
-        var loggedIn = LoggedInPattern.IsMatch(html) ? "evet" : "hayır";
+        var loggedIn = LoggedInPattern().IsMatch(html) ? "evet" : "hayır";
         return $"[HTTP {(int)response.StatusCode}, {html.Length} karakter, başlık: {pageTitle}, "
             + $"badge_row: {Regex.Count(html, "badge_row")}, gamecards: {Regex.Count(html, "/gamecards/")}, "
             + $"giriş yapılmış: {loggedIn}]";
@@ -232,7 +225,7 @@ internal sealed class SteamBadgeClient
 
     private static int? ParseRemaining(string html)
     {
-        foreach (Match match in ProgressPattern.Matches(html))
+        foreach (Match match in ProgressPattern().Matches(html))
         {
             var text = WebUtility.HtmlDecode(match.Groups[1].Value);
             if (text.Contains("No card drops remaining", StringComparison.OrdinalIgnoreCase))
@@ -240,7 +233,7 @@ internal sealed class SteamBadgeClient
                 return 0;
             }
 
-            var remaining = RemainingPattern.Match(text);
+            var remaining = RemainingPattern().Match(text);
             if (remaining.Success && int.TryParse(remaining.Groups[1].Value, out var count))
             {
                 return count;

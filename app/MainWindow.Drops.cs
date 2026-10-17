@@ -194,7 +194,7 @@ public sealed partial class MainWindow
                 {
                     cards = await _steamInventoryClient.GetCardsAsync(session, marketableOnly: false, ct);
                 }
-                catch (Exception ex) when (ex is HttpRequestException or InvalidDataException or JsonException
+                catch (Exception ex) when (ex is HttpRequestException or IOException or InvalidDataException or JsonException
                     || (ex is OperationCanceledException && !ct.IsCancellationRequested))
                 {
                     var reason = ex is OperationCanceledException ? "Steam yanıt vermedi." : ex.Message;
@@ -219,7 +219,7 @@ public sealed partial class MainWindow
                 }
                 else
                 {
-                    ProcessNewCards(cards, ct);
+                    ProcessNewCards(cards);
                 }
 
                 DropStatusText.Text = LocalizationService.Instance.Format("drops.monitoring", _idleManager.Count, interval.TotalMinutes);
@@ -244,7 +244,7 @@ public sealed partial class MainWindow
     /// Yeni görülen kartlar yalnızca şu an idle edilen bir oyuna aitse düşüş sayılır;
     /// takas veya başka yolla gelen kartlar sessizce bilinenlere eklenir.
     /// </summary>
-    private void ProcessNewCards(IReadOnlyList<SteamInventoryCard> cards, CancellationToken ct)
+    private void ProcessNewCards(IReadOnlyList<SteamInventoryCard> cards)
     {
         foreach (var card in cards)
         {
@@ -312,13 +312,13 @@ public sealed partial class MainWindow
             {
                 remaining = await _badgeClient.GetRemainingDropsAsync(session, current.AppId, ct);
             }
-            catch (HttpRequestException)
+            catch (Exception ex) when (ex is HttpRequestException or IOException)
             {
-                // Rozet sayfası okunamadı; süre sınırı geçerli.
+                AppLog.Warn($"Rozet düşüş sayısı okunamadı: {current.Name} ({current.AppId}).", ex);
             }
             catch (OperationCanceledException) when (!ct.IsCancellationRequested)
             {
-                // Steam yanıt vermedi; süre sınırı geçerli.
+                AppLog.Warn($"Rozet sayfası zaman aşımına uğradı: {current.Name} ({current.AppId}).");
             }
 
             if (remaining is int count)

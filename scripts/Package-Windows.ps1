@@ -1,6 +1,7 @@
 param(
     [string]$RuntimeIdentifier = "win-x64",
     [switch]$IncludeInstaller,
+    [switch]$IncludeLicensedSteamworksRuntime,
     [string]$AppVersion = "1.0.0"
 )
 
@@ -10,6 +11,17 @@ $projectFile = Join-Path $projectRoot "app\FarmPhantom.csproj"
 $distDirectory = Join-Path $projectRoot "dist"
 $installerScript = Join-Path $PSScriptRoot "FarmPhantom.iss"
 $installerCompiler = $null
+
+if ($IncludeLicensedSteamworksRuntime) {
+    if ($RuntimeIdentifier -ne "win-x64") {
+        throw "steam_api64.dll can only be included in a win-x64 package."
+    }
+
+    $steamworksRuntimePath = Join-Path $projectRoot "app\steam_api64.dll"
+    if (-not (Test-Path -LiteralPath $steamworksRuntimePath)) {
+        throw "The licensed steam_api64.dll must be placed in app before enabling -IncludeLicensedSteamworksRuntime."
+    }
+}
 
 if ($IncludeInstaller) {
     $compilerCommand = Get-Command "ISCC.exe" -ErrorAction SilentlyContinue
@@ -49,8 +61,16 @@ try {
     & dotnet publish $projectFile -c Release -r $RuntimeIdentifier --self-contained true -o $publishDirectory
     if ($LASTEXITCODE -ne 0) { throw "dotnet publish başarısız oldu (kod $LASTEXITCODE)." }
 
+    if ($IncludeLicensedSteamworksRuntime -and -not (Test-Path -LiteralPath (Join-Path $publishDirectory "steam_api64.dll"))) {
+        throw "The licensed steam_api64.dll was not copied to the publish directory."
+    }
+
     foreach ($nativeRuntime in @("steam_api64.dll", "libsteam_api.so", "libsteam_api.dylib")) {
         $nativeRuntimePath = Join-Path $publishDirectory $nativeRuntime
+        if ($nativeRuntime -eq "steam_api64.dll" -and $IncludeLicensedSteamworksRuntime) {
+            continue
+        }
+
         if (Test-Path -LiteralPath $nativeRuntimePath) {
             Remove-Item -LiteralPath $nativeRuntimePath -Force
         }

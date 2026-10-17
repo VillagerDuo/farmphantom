@@ -156,7 +156,7 @@ internal sealed class MarketSession
     }
 }
 
-internal sealed class SteamMarketClient
+internal sealed partial class SteamMarketClient
 {
     private static readonly HttpClient HttpClient = CreateClient();
 
@@ -200,9 +200,8 @@ internal sealed class SteamMarketClient
         return text is null || minor is null ? null : new MarketPrice(minor.Value, text);
     }
 
-    private static readonly Regex NameIdPattern = new(
-        @"Market_LoadOrderSpread\(\s*(\d+)\s*\)",
-        RegexOptions.Compiled | RegexOptions.CultureInvariant);
+    [GeneratedRegex(@"Market_LoadOrderSpread\(\s*(\d+)\s*\)", RegexOptions.CultureInvariant)]
+    private static partial Regex NameIdPattern();
 
     private readonly Dictionary<string, long> _nameIds = new(StringComparer.Ordinal);
     private readonly string _nameIdsPath = Path.Combine(
@@ -296,7 +295,7 @@ internal sealed class SteamMarketClient
 
         response.EnsureSuccessStatusCode();
         var html = await response.Content.ReadAsStringAsync(cancellationToken);
-        var match = NameIdPattern.Match(html);
+        var match = NameIdPattern().Match(html);
         return match.Success && long.TryParse(match.Groups[1].Value, NumberStyles.None, CultureInfo.InvariantCulture, out var id)
             ? id
             : null;

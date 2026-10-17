@@ -14,8 +14,10 @@ namespace FarmPhantom;
 
 public sealed partial class MainWindow : Window
 {
-    private static readonly Regex AppIdPattern = new("^[1-9][0-9]{0,9}$", RegexOptions.Compiled);
     private static readonly int[] ParallelChoices = [1, 2, 4, 8, 16, 32];
+
+    [GeneratedRegex("^[1-9][0-9]{0,9}$")]
+    private static partial Regex AppIdPattern();
 
     private readonly SteamInventoryClient _steamInventoryClient = new();
     private readonly GameBlacklistStore _gameBlacklistStore = new();
@@ -867,7 +869,7 @@ public sealed partial class MainWindow : Window
     private void LaunchGameButton_Click(object? sender, RoutedEventArgs e)
     {
         var appId = AppIdTextBox.Text?.Trim();
-        if (appId is null || !AppIdPattern.IsMatch(appId))
+        if (appId is null || !AppIdPattern().IsMatch(appId))
         {
             SteamActionStatus.Text = LocalizationService.Instance.Translate("steam.appIdInvalid");
             return;
@@ -881,7 +883,7 @@ public sealed partial class MainWindow : Window
     private void OpenBadgePageButton_Click(object? sender, RoutedEventArgs e)
     {
         var appId = AppIdTextBox.Text?.Trim();
-        if (appId is null || !AppIdPattern.IsMatch(appId))
+        if (appId is null || !AppIdPattern().IsMatch(appId))
         {
             SteamActionStatus.Text = LocalizationService.Instance.Translate("steam.badgeAppIdInvalid");
             return;

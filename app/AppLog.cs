@@ -7,15 +7,15 @@ namespace FarmPhantom;
 /// Basit dosya günlüğü: %LocalAppData%\FarmPhantom\logs\farmphantom-YYYYMMDD.log. Günde bir dosya, 14 günden eskiler silinir.
 /// Çerez, anahtar ve token benzeri değerler yazılmadan önce maskelenir. Günlük hatası uygulamayı hiçbir zaman etkilemez.
 /// </summary>
-internal static class AppLog
+internal static partial class AppLog
 {
     private const int RetentionDays = 14;
     private const int MaxMessageLength = 2000;
 
     private static readonly object Gate = new();
-    private static readonly Regex Secret = new(
-        @"(access_token|sessionid|steamLoginSecure|token|key|password)=[^&\s""';]+",
-        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+    [GeneratedRegex(@"(access_token|sessionid|steamLoginSecure|token|key|password)=[^&\s""';]+",
+        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    private static partial Regex SecretPattern();
 
     public static string LogDirectory { get; } = System.IO.Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -95,6 +95,6 @@ internal static class AppLog
             singleLine = singleLine[..MaxMessageLength] + "…";
         }
 
-        return Secret.Replace(singleLine, "$1=***");
+        return SecretPattern().Replace(singleLine, "$1=***");
     }
 }
