@@ -71,21 +71,6 @@ public sealed partial class MainWindow : Window
 
     private bool _trayHintShown;
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-
-        if (change.Property == Window.WindowStateProperty
-            && change.NewValue is WindowState.Minimized
-            && _isUiInitialized
-            && !_cleanedUp
-            && TrayOnCloseCheckBox.IsChecked == true
-            && (Application.Current as App)?.TrayAvailable == true)
-        {
-            HideToTray();
-        }
-    }
-
     private void HideToTray()
     {
         Hide();
