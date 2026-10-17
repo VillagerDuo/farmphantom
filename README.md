@@ -84,8 +84,19 @@ Diller: Türkçe, İngilizce, Almanca, Fransızca, İspanyolca, İtalyanca, Brez
 
 ### Kurulum
 
+#### Hazır Windows paketini kullanma
+
+[GitHub Releases](https://github.com/VillagerDuo/farmphantom/releases/latest) sayfasından **Setup** veya **portable ZIP** paketini indir:
+
+- **Setup:** `FarmPhantom-Setup-win-x64.exe` dosyasını çalıştırıp sihirbazı tamamla. Kurulum .NET 10’u kendi içinde taşır; ayrıca .NET kurman gerekmez. İlk açılışta resmi `steam_api64.dll` dosyasını seçmen istenir; dosya uygulamanın yanına kopyalanır. Pencereyi kapatırsan Ayarlar → Steamworks bölümündeki seçme düğmesini kullan.
+- **Portable:** `FarmPhantom-win-x64.zip` dosyasını bir klasöre tamamen çıkar ve içindeki `FarmPhantom.exe` dosyasını çalıştır. DLL’i önceden exe’nin yanına koyabilir veya ilk açılıştaki dosya penceresinde gösterebilirsin. ZIP’i Program Files gibi yazma izni olmayan bir klasöre değil, yazma iznin olan bir klasöre çıkar.
+
+Her iki sürümde de Steam istemcisi bilgisayarda kurulu ve açık olmalıdır; Steam çerezlerini kimseyle paylaşma. `steam_api64.dll` varsayılan paketlere dahil değildir. Resmi DLL’i edinme adımları aşağıdaki Steamworks bölümündedir; başka oyunlardan veya rastgele DLL sitelerinden dosya alma.
+
+#### Kaynaktan çalıştırma / Windows paketi hazırlama
+
 1. .NET 10 SDK kur.
-2. Resmi `steam_api64.dll` dosyasını `app/` içine koy. Steamworks.NET’in Standalone paketinden veya Steamworks SDK’dan al. Lisans yüzünden bu dosya repoda yok. Steam açık olsun, idle edeceğin oyunlar da o hesapta olsun.
+2. Resmi [Steamworks.NET 2024.8.0 Standalone paketini indir](https://github.com/rlabrecque/Steamworks.NET/releases/download/2024.8.0/Steamworks.NET-Standalone_2024.8.0.zip). ZIP’in içindeki `Windows-x64/steam_api64.dll` dosyasını çıkarıp `app/` klasörüne kopyala. Bu, projedeki Steamworks.NET sürümüyle eşleşen resmi pakettir. Alternatif olarak [Valve Steamworks SDK indirme sayfasını](https://partner.steamgames.com/downloads/list) kullanabilirsin; indirmek için Steamworks partner hesabı gerekir. SDK içindeki `sdk/redistributable_bin/win64/steam_api64.dll` dosyasını al. DLL repoda ve varsayılan kurulum paketinde bulunmaz; başka bir oyunun klasöründen veya DLL indirme sitelerinden alma. Yeniden dağıtım için Valve’ın Steamworks şartlarına uy.
 3. `app` klasöründe `dotnet run`.
 
 Tek exe için:
@@ -94,11 +105,11 @@ Tek exe için:
 dotnet publish -c Release -r win-x64
 ```
 
-Yanına yine `steam_api64.dll` koyman lazım.
+Yayımlanan exe’nin yanına yine `steam_api64.dll` koyman lazım.
 
 Paylaşılacak ZIP için PowerShell’de `.\scripts\Package-Windows.ps1`. Çıktı `dist/` altına gider.
 
-Kurulum dosyası hazırlamak için Inno Setup 6’yı kurup `.\scripts\Package-Windows.ps1 -IncludeInstaller -AppVersion 1.0.0` çalıştır. `dist/` içine ZIP’in yanında `FarmPhantom-Setup-win-x64.exe` gelir. Setup .NET’i kendi içinde taşır; ayrıca .NET kurdurmaz. Steamworks lisansı yüzünden DLL varsayılan olarak pakete eklenmez; ilk açılışta resmi `steam_api64.dll` dosyasını seçmen istenir. DLL’i dağıtma iznin varsa resmi dosyayı `app/` içine koyup `-IncludeLicensedSteamworksRuntime` seçeneğiyle ZIP ve setup’a ekleyebilirsin. Steam’i setup kurmaz; Steam’in bilgisayarda kurulu ve açık olması gerekir.
+Kurulum dosyası hazırlamak için Inno Setup 6’yı kurup `.\scripts\Package-Windows.ps1 -IncludeInstaller -AppVersion 1.0.1` çalıştır. `dist/` içine ZIP’in yanında `FarmPhantom-Setup-win-x64.exe` gelir. Setup .NET’i kendi içinde taşır; ayrıca .NET kurdurmaz. Steamworks lisansı yüzünden DLL varsayılan olarak pakete eklenmez; ilk açılışta resmi `steam_api64.dll` dosyasını seçmen istenir. DLL’i dağıtma iznin varsa resmi dosyayı `app/` içine koyup `-IncludeLicensedSteamworksRuntime` seçeneğiyle ZIP ve setup’a ekleyebilirsin. Steam’i setup kurmaz; Steam’in bilgisayarda kurulu ve açık olması gerekir.
 
 ### Çerezler
 
@@ -183,8 +194,19 @@ Languages: Turkish, English, German, French, Spanish, Italian, Brazilian Portugu
 
 ### Setup
 
-1. Install the .NET 10 SDK..
-2. Put the official `steam_api64.dll` in `app/`. Get it from the Steamworks.NET standalone zip or the Steamworks SDK. It is not in this repo. Steam should be running, and the games should be on that account.
+#### Using the ready-to-run Windows packages
+
+Download either **Setup** or the **portable ZIP** from [GitHub Releases](https://github.com/VillagerDuo/farmphantom/releases/latest):
+
+- **Setup:** Run `FarmPhantom-Setup-win-x64.exe` and complete the wizard. The installer is self-contained and does not require a separate .NET 10 installation. On first launch, select the official `steam_api64.dll`; FarmPhantom copies it beside the app. If you close the picker, reopen it from Settings → Steamworks.
+- **Portable:** Extract the entire `FarmPhantom-win-x64.zip` to a folder and run the included `FarmPhantom.exe`. You can put the DLL beside the exe beforehand or select it in the first-launch file picker. Extract it to a writable folder, not a protected location such as Program Files.
+
+Both versions require the Steam client to be installed and running. Never share your Steam cookies. The default packages do not include `steam_api64.dll`; see the Steamworks section below for official download instructions. Do not copy it from another game or a DLL-download site.
+
+#### Build from source / package Windows
+
+1. Install the .NET 10 SDK.
+2. Download the official [Steamworks.NET 2024.8.0 Standalone package](https://github.com/rlabrecque/Steamworks.NET/releases/download/2024.8.0/Steamworks.NET-Standalone_2024.8.0.zip). Extract `Windows-x64/steam_api64.dll` and copy it into `app/`. This release matches the Steamworks.NET version used by this project. Alternatively, use the [Valve Steamworks SDK downloads](https://partner.steamgames.com/downloads/list) (requires a Steamworks partner account) and take `sdk/redistributable_bin/win64/steam_api64.dll`. The DLL is not in this repository or the default installer. Never use DLL-download websites or copy it from another game. Follow Valve’s Steamworks terms for redistribution.
 3. `dotnet run` from `app`.
 
 Single-file publish:
@@ -193,11 +215,11 @@ Single-file publish:
 dotnet publish -c Release -r win-x64
 ```
 
-Keep `steam_api64.dll` next to the exe.
+Keep `steam_api64.dll` next to the published exe.
 
 For a shareable zip, run `.\scripts\Package-Windows.ps1` in PowerShell. Output goes to `dist/`.
 
-To build a Windows installer, install Inno Setup 6 and run `.\scripts\Package-Windows.ps1 -IncludeInstaller -AppVersion 1.0.0`. This creates `dist\FarmPhantom-Setup-win-x64.exe` alongside the zip. The installer is self-contained (no separate .NET install); by default users select the official `steam_api64.dll` on first launch. If you have redistribution rights, place the official file in `app/` and add `-IncludeLicensedSteamworksRuntime` to include it in both packages. The installer does not install Steam. Steam must already be installed and running.
+To build a Windows installer, install Inno Setup 6 and run `.\scripts\Package-Windows.ps1 -IncludeInstaller -AppVersion 1.0.1`. This creates `dist\FarmPhantom-Setup-win-x64.exe` alongside the zip. The installer is self-contained (no separate .NET install); by default users select the official `steam_api64.dll` on first launch. If you have redistribution rights, place the official file in `app/` and add `-IncludeLicensedSteamworksRuntime` to include it in both packages. The installer does not install Steam. Steam must already be installed and running.
 
 ### Cookies
 
