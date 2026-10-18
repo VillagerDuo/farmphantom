@@ -28,6 +28,13 @@
 </p>
 
 <p align="center">
+  <a href="https://www.patreon.com/16974850/join"><strong>☕ FarmPhantom’a Patreon’dan destek ol</strong></a><br />
+  <sub>Projeyi beğendiysen, geliştirilmesine destek olmak için Patreon’a göz atabilirsin. Destek tamamen isteğe bağlıdır.</sub><br />
+  <a href="https://www.patreon.com/16974850/join"><strong>Support FarmPhantom on Patreon</strong></a><br />
+  <sub>If you enjoy the project, visit Patreon to support its development. Support is entirely optional.</sub>
+</p>
+
+<p align="center">
   <em>Windows için açık kaynak Steam kart takip aracı · Türkçe ve İngilizce</em>
 </p>
 
@@ -75,6 +82,8 @@ Sıra senin verdiğin sırayı izleyebilir, ya da kartı az kalan / çok kalan o
 **Kart takibi.** Envanter arada bir okunur. Düşüş olarak yalnızca o anda idle ettiğin oyunun kartı sayılır. Takastan veya başka yerden gelen kartlar buraya yazılmaz. Geçmiş, günlük özet ve kaba bir değer tahmini de bu sayfada.
 
 Aynı anda 1–32 oyun çalıştırabilirsin.
+
+**Kartlı oyun kataloğu.** Steam kart seti olan oyunları kart adedi ve seçilen ülkenin Steam mağaza fiyatıyla ucuzdan pahalıya listeler. Bütçe filtresi yalnızca oyun fiyatına uygulanır ve girilen tutara göre çalışır; kart fiyatı filtreyi etkilemez. Kart fiyatı, Steam Card Exchange’den alınan tam setin USD cinsinden tahmini değeridir; Steam kesintileri düşülmemiştir ve gerçek satış garantisi değildir. Fiyatın hangi bölgede gösterildiği ve kataloğun güncellenme zamanı ekranda belirtilir; ülke fiyatları farklı para birimleri ve bölgesel fiyatlandırma kullanabilir. Türkiye, ABD ve MENA ülkeleri arasından bölge seçilebilir; her bölgenin fiyatları ayrı önbellekte tutulur. İlk yenileme tüm kataloğu internetten indirir, sonraki açılışlarda altı saatlik yerel önbellek kullanılır. Steam mağazasında fiyatı olmayan oyunlar listede kalır.
 
 **Satış.** Market fiyatını çeker, taslak ilan çıkarır. Onaylamadan hiçbir şey listelenmez. “Kart başına en düşük net kazanç” Steam komisyonundan sonra cebine kalacak tutardır.
 
@@ -185,6 +194,8 @@ The queue can follow the order you set, or start from games with the fewest / mo
 **Card tracking.** Inventory is polled on a timer. A drop only counts if it belongs to a game you are idling right now. Trades and other incoming cards are ignored. History, daily / per-game totals, and a rough value estimate are on this page.
 
 You can run 1–32 games in parallel.
+
+**Card-game catalog.** Lists games with Steam card sets by the selected country's Steam Store price, from low to high. The entered budget filter applies only to the game price, not the card value. Card price is the estimated USD value of a complete set from Steam Card Exchange; it is before Steam fees and is not a guaranteed sale value. The selected region and the catalog refresh time are shown; regional prices may use different currencies and pricing. Turkey, the US, and MENA countries can be selected, with a separate six-hour cache for each region. Sale listings show the regular price as displayed by Steam, the discount, and the current price; each row opens the Steam page for the selected region. Games without a Store price remain listed.
 
 **Sales.** Fetches current Market prices and builds listing drafts. Nothing is listed without your OK. “Minimum net per card” is what you keep after Steam’s cut.
 
