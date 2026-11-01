@@ -40,8 +40,16 @@ public sealed partial class App : Application
                 desktop.MainWindow = splash;
                 splash.Finished += () =>
                 {
-                    CreateMain(show: true);
-                    splash.Close();
+                    try
+                    {
+                        CreateMain(show: true);
+                        splash.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        AppLog.Error($"Ana pencere oluşturulamadı: {ex}");
+                        splash.ShowStartupError(ex.Message);
+                    }
                 };
             }
         }
