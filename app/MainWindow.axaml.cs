@@ -107,6 +107,7 @@ public sealed partial class MainWindow : Window
         _recovering.Clear();
         _inventoryCancellation?.Cancel();
         _inventoryCancellation?.Dispose();
+        _cardCatalogCancellation?.Cancel();
         _salesCancellation?.Cancel();
         _salesCancellation?.Dispose();
         _valueCancellation?.Cancel();
