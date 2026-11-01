@@ -65,6 +65,7 @@
           <TextBlock Text="{local:Loc Key=nav.section}" Classes="hint" Margin="12,8,0,8" FontSize="9" />
           <Button x:Name="NavOverviewButton" Classes="nav active" Tag="overview" Click="NavButton_Click" Content="{local:Loc Key=nav.overview}" />
           <Button x:Name="NavGamesButton" Classes="nav" Tag="games" Click="NavButton_Click" Content="{local:Loc Key=nav.games}" />
+          <Button x:Name="NavCardCatalogButton" Classes="nav" Tag="cardCatalog" Click="NavButton_Click" Content="{local:Loc Key=nav.cardCatalog}" />
           <Button x:Name="NavDropsButton" Classes="nav" Tag="drops" Click="NavButton_Click" Content="{local:Loc Key=nav.drops}" />
           <Button x:Name="NavSalesButton" Classes="nav" Tag="sales" Click="NavButton_Click" Content="{local:Loc Key=nav.sales}" />
         </StackPanel>
@@ -616,6 +617,113 @@
             </Border>
           </StackPanel>
         </ScrollViewer>
+
+        <!-- KARTLI OYUN KATALOĞU -->
+        <Grid x:Name="CardCatalogPage" IsVisible="False" Margin="22,16,22,20"
+              RowDefinitions="Auto,*" RowSpacing="14">
+          <Border Grid.Row="0" Classes="card" Padding="16">
+            <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
+              <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+                <StackPanel Spacing="4">
+                  <TextBlock Text="{local:Loc Key=catalog.title}" Classes="h1" />
+                  <TextBlock Classes="hint" Text="{local:Loc Key=catalog.description}" />
+                </StackPanel>
+                <Button x:Name="RefreshCardCatalogButton" Grid.Column="1"
+                        Content="{local:Loc Key=catalog.refresh}" Classes="primary"
+                        VerticalAlignment="Center" Click="RefreshCardCatalogButton_Click" />
+                <Button x:Name="CancelCardCatalogButton" Grid.Column="2"
+                        Content="{local:Loc Key=catalog.cancel}" Classes="danger"
+                        VerticalAlignment="Center" IsVisible="False"
+                        Click="CancelCardCatalogButton_Click" />
+              </Grid>
+              <Grid Grid.Row="1" ColumnDefinitions="*,150,180,200,Auto" ColumnSpacing="10">
+                <TextBox x:Name="CardCatalogSearchTextBox" PlaceholderText="{local:Loc Key=catalog.search}"
+                         TextChanged="CardCatalogSearchTextBox_TextChanged" />
+                <TextBox x:Name="CardCatalogBudgetTextBox" Grid.Column="1"
+                         PlaceholderText="{local:Loc Key=catalog.budgetPlaceholder}"
+                         TextChanged="CardCatalogBudgetTextBox_TextChanged" />
+                <ComboBox x:Name="CardCatalogRegionComboBox" Grid.Column="2"
+                          HorizontalAlignment="Stretch"
+                          SelectionChanged="CardCatalogRegionComboBox_SelectionChanged" />
+                <ComboBox x:Name="CardCatalogSortComboBox" Grid.Column="3" SelectedIndex="0"
+                          HorizontalAlignment="Stretch" SelectionChanged="CardCatalogSortComboBox_SelectionChanged">
+                  <ComboBoxItem Content="{local:Loc Key=catalog.sortCheap}" />
+                  <ComboBoxItem Content="{local:Loc Key=catalog.sortExpensive}" />
+                </ComboBox>
+                <Button Grid.Column="4" Content="{local:Loc Key=catalog.sources}"
+                        Click="OpenCardCatalogSource_Click" />
+              </Grid>
+              <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="12">
+                <TextBlock x:Name="CardCatalogStatusText" Classes="hint"
+                         Text="{local:Loc Key=catalog.initialStatus}" />
+                <TextBlock x:Name="CardCatalogBudgetHintText" Grid.Column="1" Classes="hint"
+                           Text="{local:Loc Key=catalog.budgetHint}" />
+              </Grid>
+            </Grid>
+          </Border>
+          <Grid Grid.Row="1">
+            <ListBox x:Name="CardCatalogListBox">
+              <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="local:SteamCardCatalogGame">
+                  <Border Classes="card" Padding="10" Margin="0,0,0,8">
+                    <Grid ColumnDefinitions="Auto,*,90,155,160,Auto" ColumnSpacing="12">
+                      <Border Width="118" Height="58" CornerRadius="8" ClipToBounds="True"
+                              VerticalAlignment="Center" Background="{DynamicResource RaisedBrush}">
+                        <local:RemoteImage Url="{Binding HeaderUrl}" FallbackUrl="{Binding HeaderFallbackUrl}"
+                                           DecodeWidth="236" Stretch="UniformToFill" />
+                      </Border>
+                      <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Name}" Classes="body" FontWeight="SemiBold"
+                                   TextTrimming="CharacterEllipsis" />
+                        <TextBlock Text="{Binding AppId, StringFormat='App ID {0}'}" Classes="hint" />
+                      </StackPanel>
+                      <StackPanel Grid.Column="2" Spacing="2" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="{Binding CardsInSet}" Classes="stat" FontSize="18"
+                                   HorizontalAlignment="Center" />
+                        <TextBlock Text="{local:Loc Key=catalog.cards}" Classes="hint"
+                                   HorizontalAlignment="Center" />
+                      </StackPanel>
+                      <StackPanel Grid.Column="3" Spacing="3" VerticalAlignment="Center" HorizontalAlignment="Right">
+                        <TextBlock Text="{local:Loc Key=catalog.gamePrice}" Classes="hint"
+                                   HorizontalAlignment="Right" />
+                        <TextBlock Text="{Binding FinalPriceText}" Classes="body" FontWeight="Bold"
+                                   HorizontalAlignment="Right" IsVisible="{Binding HasPaidPrice}" />
+                        <TextBlock Text="{local:Loc Key=catalog.free}" Classes="body" FontWeight="Bold"
+                                   HorizontalAlignment="Right" IsVisible="{Binding IsFree}" />
+                        <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Right"
+                                    IsVisible="{Binding HasDiscount}">
+                          <TextBlock Text="{Binding OriginalPriceText}" Classes="hint"
+                                     TextDecorations="Strikethrough" />
+                          <TextBlock Text="{Binding DiscountText}" Foreground="{DynamicResource MintBrush}" />
+                        </StackPanel>
+                        <TextBlock Text="{local:Loc Key=catalog.priceUnavailable}" Classes="hint"
+                                   IsVisible="{Binding HasNoPrice}" />
+                      </StackPanel>
+                      <StackPanel Grid.Column="4" Spacing="3" VerticalAlignment="Center" HorizontalAlignment="Right">
+                        <TextBlock Text="{local:Loc Key=catalog.cardPrice}" Classes="hint"
+                                   HorizontalAlignment="Right" />
+                        <TextBlock Text="{Binding CardSetValueText}" Classes="body" FontWeight="Bold"
+                                   HorizontalAlignment="Right" IsVisible="{Binding HasCardSetValue}" />
+                        <TextBlock Text="{local:Loc Key=catalog.cardSetValue}" Classes="hint"
+                                   HorizontalAlignment="Right" IsVisible="{Binding HasCardSetValue}" />
+                        <TextBlock Text="{Binding CardSetValueUpdatedText}" Classes="hint" FontSize="10"
+                                   HorizontalAlignment="Right" IsVisible="{Binding HasCardSetValue}" />
+                        <TextBlock Text="{local:Loc Key=catalog.valueUnavailable}" Classes="hint"
+                                   HorizontalAlignment="Right" IsVisible="{Binding HasNoCardSetValue}" />
+                      </StackPanel>
+                      <Button Grid.Column="5" Content="{local:Loc Key=catalog.openSteam}"
+                              Classes="primary" VerticalAlignment="Center"
+                              Click="OpenCardCatalogStoreButton_Click" />
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+            <TextBlock x:Name="CardCatalogEmptyStateText" Text="{local:Loc Key=catalog.noResults}"
+                       Classes="hint" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       IsHitTestVisible="False" IsVisible="False" />
+          </Grid>
+        </Grid>
 
         <!-- AYARLAR -->
         <ScrollViewer x:Name="SettingsPage" IsVisible="False">
