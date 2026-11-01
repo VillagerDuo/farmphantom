@@ -46,6 +46,7 @@ public sealed partial class MainWindow
         AutoQueueCheckBox.IsChecked = settings.AutoQueueEnabled;
         QueuePriorityComboBox.SelectedIndex = Math.Clamp(settings.QueuePriorityIndex, 0, 2);
         LocalizationService.Instance.SetLanguage(settings.LanguageCulture);
+        InitializeCardCatalogRegionOptions(settings.CardCatalogCountryCode);
         LanguageComboBox.ItemsSource = LocalizationService.Instance.Languages;
         LanguageComboBox.SelectedItem = LocalizationService.Instance.Languages
             .FirstOrDefault(language => language.Culture.Equals(LocalizationService.Instance.SelectedCulture, StringComparison.OrdinalIgnoreCase));
@@ -115,6 +116,7 @@ public sealed partial class MainWindow
             GameFilterIndex = Math.Max(GameFilterComboBox.SelectedIndex, 0),
             GameSortIndex = Math.Max(GameSortComboBox.SelectedIndex, 0),
             PriceModeIndex = Math.Max(PriceModeComboBox.SelectedIndex, 0),
+            CardCatalogCountryCode = SelectedCardCatalogRegion.CountryCode,
             CurrencyCode = SelectedCurrency.Code,
             MinPrice = MinPriceTextBox.Text?.Trim() ?? string.Empty,
             PresenceEnabled = PresenceCheckBox.IsChecked == true,
@@ -173,8 +175,10 @@ public sealed partial class MainWindow
             return;
         }
 
+        var catalogCountryCode = SelectedCardCatalogRegion.CountryCode;
         LocalizationService.Instance.SetLanguage(language.Culture);
         FlowDirection = LocalizationService.Instance.FlowDirection;
+        InitializeCardCatalogRegionOptions(catalogCountryCode);
         _refreshingLanguageOptions = true;
         LanguageComboBox.ItemsSource = LocalizationService.Instance.Languages;
         LanguageComboBox.SelectedItem = LocalizationService.Instance.Languages
