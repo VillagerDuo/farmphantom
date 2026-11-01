@@ -107,6 +107,9 @@ internal sealed class SplashWindow : Window
             FontSize = 12,
             Foreground = new SolidColorBrush(Color.Parse("#7C81A8")),
             HorizontalAlignment = HorizontalAlignment.Center,
+            TextAlignment = TextAlignment.Center,
+            TextWrapping = Avalonia.Media.TextWrapping.Wrap,
+            MaxWidth = 380,
             Margin = new Thickness(0, 4, 0, 0),
             Opacity = 0
         };
@@ -160,6 +163,15 @@ internal sealed class SplashWindow : Window
         _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(16) };
         _timer.Tick += (_, _) => Tick();
         Opened += (_, _) => _timer.Start();
+    }
+
+    public void ShowStartupError(string message)
+    {
+        _timer.Stop();
+        _subtitle.Text = $"Ana pencere açılamadı:\n{message}";
+        _subtitle.Foreground = new SolidColorBrush(Color.Parse("#F27691"));
+        _subtitle.Opacity = 1;
+        Opacity = 1;
     }
 
     private void Tick()
