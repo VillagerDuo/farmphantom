@@ -25,6 +25,7 @@ internal sealed class AppSettings
     public int GameFilterIndex { get; set; }
     public int GameSortIndex { get; set; }
     public int PriceModeIndex { get; set; }
+    public string CardCatalogCountryCode { get; set; } = "tr";
     public int CurrencyCode { get; set; } = 1;
     public string MinPrice { get; set; } = string.Empty;
     public bool PresenceEnabled { get; set; } = true;
