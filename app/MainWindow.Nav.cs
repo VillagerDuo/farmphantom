@@ -23,6 +23,7 @@ public sealed partial class MainWindow
         PageTitleText.Text = page switch
         {
             "games" => LocalizationService.Instance.Translate("page.games"),
+            "cardCatalog" => LocalizationService.Instance.Translate("page.cardCatalog"),
             "drops" => LocalizationService.Instance.Translate("page.drops"),
             "sales" => LocalizationService.Instance.Translate("page.sales"),
             "settings" => LocalizationService.Instance.Translate("page.settings"),
@@ -31,12 +32,14 @@ public sealed partial class MainWindow
 
         OverviewPage.IsVisible = page == "overview";
         GamesPage.IsVisible = page == "games";
+        CardCatalogPage.IsVisible = page == "cardCatalog";
         DropsPage.IsVisible = page == "drops";
         SalesPage.IsVisible = page == "sales";
         SettingsPage.IsVisible = page == "settings";
 
         SetActive(NavOverviewButton, page == "overview");
         SetActive(NavGamesButton, page == "games");
+        SetActive(NavCardCatalogButton, page == "cardCatalog");
         SetActive(NavDropsButton, page == "drops");
         SetActive(NavSalesButton, page == "sales");
         SetActive(NavSettingsButton, page == "settings");
@@ -49,6 +52,11 @@ public sealed partial class MainWindow
         if (page == "settings")
         {
             RefreshNativeDllStatus();
+        }
+
+        if (page == "cardCatalog")
+        {
+            _ = LoadCardCatalogAsync(forceRefresh: false);
         }
     }
 
